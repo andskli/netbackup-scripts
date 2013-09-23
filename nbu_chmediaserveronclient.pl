@@ -9,8 +9,12 @@ local $ENV{PATH} = "$ENV{PATH}:/usr/openv/netbackup/bin";
 local $ENV{PATH} = "$ENV{PATH}:/usr/openv/netbackup/bin/admincmd";
 local $ENV{PATH} = "$ENV{PATH}:/usr/openv/volmgr/bin";
 
+my $bpgetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpgetconfig";
+my $bpsetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpsetconfig";
+my $addmediasrvbin = "/usr/openv/netbackup/bin/add_media_server_on_clients";
+
 my %opt;
-getopts('a:m:c:h:?:d', \%opt) || output_usage();
+getopts('h?da:m:c:', \%opt) || output_usage();
 output_usage() if $opt{'h'};
 
 sub output_usage
@@ -38,12 +42,27 @@ if ((!$opt{'a'}) or
     output_usage();
 }
 
+parse_bpconf
+{
+    $in = $_;
+    while ()
+    {
+        chomp;
+        s/#.*//;
+        s/^\s+//;
+        s/\s+$//;
+        next unless length;
+        my ($key, $val) = split(/\s*=\s*/, $_, 2);
+        $config{$key} = $val;
+    }
+    print Dumper(\%config);
+}
 
 sub bpgetconfig
 {
-    my $client = @_;
-    print STDERR ("> $client");
-    system("bpgetconfig -s ", $client, " -A -L");
+    my $client = $_[0];
+    my $output = `$bpgetconfigbin -M $client`;
+    return $output;
 }
 
 sub main
@@ -52,6 +71,16 @@ sub main
     my $mediasrv = $opt{'m'};
     my $action = $opt{'a'};
 
-    bpgetconfig($client);
+    #&bpgetconfig($client, $action);
+    if ($action eq "add")
+    {
+        &add_media_srv($client, $mediasrv);
+    }
+    elsif ($action eq "show")
+    {
+        my $c = &bpgetconfig($client);
+        #print "DEBUG: $c\n";
+        &parse_bpconf($c);
+    }
 }
 main()
