@@ -42,7 +42,7 @@ if ((!$opt{'a'}) or
     output_usage();
 }
 
-parse_bpconf
+sub parse_bpconf
 {
     $in = $_;
     while ()
