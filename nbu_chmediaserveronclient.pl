@@ -5,6 +5,10 @@ use warnings;
 use Getopt::Std;
 use Data::Dumper;
 
+local $ENV{PATH} = "$ENV{PATH}:/usr/openv/netbackup/bin";
+local $ENV{PATH} = "$ENV{PATH}:/usr/openv/netbackup/bin/admincmd";
+local $ENV{PATH} = "$ENV{PATH}:/usr/openv/volmgr/bin";
+
 my $bpgetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpgetconfig";
 my $bpsetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpsetconfig";
 my $addmediasrvbin = "/usr/openv/netbackup/bin/add_media_server_on_clients";
@@ -13,7 +17,8 @@ my %opt;
 getopts('h?da:m:c:', \%opt) || output_usage();
 output_usage() if $opt{'h'};
 
-sub output_usage {
+sub output_usage
+{
     my $usage = "Usage: $0 [options]
 
 Options:
@@ -32,13 +37,16 @@ if ($opt{'d'}) {
 
 if ((!$opt{'a'}) or
     (!$opt{'m'}) or
-    (!$opt{'c'})) {
+    (!$opt{'c'}))
+{
     output_usage();
 }
 
-parse_bpconf {
+parse_bpconf
+{
     $in = $_;
-    while () {
+    while ()
+    {
         chomp;
         s/#.*//;
         s/^\s+//;
@@ -50,22 +58,26 @@ parse_bpconf {
     print Dumper(\%config);
 }
 
-sub bpgetconfig {
+sub bpgetconfig
+{
     my $client = $_[0];
     my $output = `$bpgetconfigbin -M $client`;
     return $output;
 }
 
-sub main {
+sub main
+{
     my $client = $opt{'c'};
     my $mediasrv = $opt{'m'};
     my $action = $opt{'a'};
 
     #&bpgetconfig($client, $action);
-    if ($action eq "add") {
+    if ($action eq "add")
+    {
         &add_media_srv($client, $mediasrv);
     }
-    elsif ($action eq "show") {
+    elsif ($action eq "show")
+    {
         my $c = &bpgetconfig($client);
         #print "DEBUG: $c\n";
         &parse_bpconf($c);
