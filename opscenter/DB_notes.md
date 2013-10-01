@@ -1,9 +1,10 @@
 # Notes on DB
+Some quick notes on how to interpret NetBackup OpsCenter Analytics DB.
 
 ## Table: domain_media
+Interesting columns and their explaination
 
 ###Column *status*
-
 Statuscode | Meaning
 --- | ---
 8 | Full
