@@ -1,4 +1,9 @@
 #!/usr/bin/perl
+#
+# Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
+#
+# Purpose of this script is to handle add/remove of media servers on clients.
+#
 
 use strict;
 use warnings;
