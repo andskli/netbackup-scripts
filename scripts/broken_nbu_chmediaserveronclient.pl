@@ -70,6 +70,13 @@ sub bpgetconfig
     return $output;
 }
 
+sub add_media_srv
+{
+    my $client = $_[0];
+    my $mediasrv = $_[1];
+    system("echo \"SERVER = $mediasrv\"|". $bpsetconfig ." -h " . $client);
+}
+
 sub main
 {
     my $client = $opt{'c'};
