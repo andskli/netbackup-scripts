@@ -11,13 +11,15 @@ ME="$(basename "$0")"
 
 BPGETCONFIGBIN=/usr/openv/netbackup/bin/admincmd/bpgetconfig
 BPSETCONFIGBIN=/usr/openv/netbackup/bin/admincmd/bpsetconfig
+BPPLLISTBIN=/usr/openv/netbackup/bin/admincmd/bppllist
 
 function usage {
-    echo "Usage: $ME [-c <client>/-f <path to file containing list of clients>] -m <mediasrv>"
+    echo "Usage: $ME [-c <client>/-f <path to file containing list of clients>/-p <policy>] -m <mediasrv>"
+    echo -e "\t-p <policy>\tspecifies all clients in that policy"
     exit 1
 }
 
-while getopts "c:f:m:" o; do
+while getopts "c:f:m:p:" o; do
     case "${o}" in
         c)
             CLIENT=${OPTARG}
@@ -28,6 +30,8 @@ while getopts "c:f:m:" o; do
         m)
             MEDIASRV=${OPTARG}
             ;;
+        p)
+            POLICY=${OPTARG}
         *)
             usage
             ;;
@@ -65,3 +69,9 @@ if [ ! -z "$CLIENTLIST" ]; then
     done
 fi
 
+if [ ! -z "$POLICY" ]; then
+    CLIENTS=`$BPPLLISTBIN $POLICY -l|grep ^CLIENT|awk '{print $2}'`
+    for client in $CLIENTS; do
+        new_mediasrvlist $client | $BPSETCONFIGBIN -h $client 2>&1 >/dev/null
+    done
+fi
