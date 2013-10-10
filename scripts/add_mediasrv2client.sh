@@ -1,6 +1,8 @@
 #!/bin/bash
 #
 # Add mediasrv to client.
+# Use either a list of clients specified by -f, or a single client
+# specified by -c.
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
