@@ -1,8 +1,6 @@
 #!/bin/bash
 #
 # Add mediasrv to client.
-# Use either a list of clients specified by -f, or a single client
-# specified by -c.
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
@@ -14,8 +12,12 @@ BPSETCONFIGBIN=/usr/openv/netbackup/bin/admincmd/bpsetconfig
 BPPLLISTBIN=/usr/openv/netbackup/bin/admincmd/bppllist
 
 function usage {
-    echo "Usage: $ME [-c <client>/-f <path to file containing list of clients>/-p <policy>] -m <mediasrv>"
+    echo "Usage: $ME [-c <client>/-f <path>/-p <policy>] -m <mediasrv>"
+    echo -e "At least ONE of the following:"
     echo -e "\t-p <policy>\tspecifies all clients in that policy"
+    echo -e "\t-c <client>\tname of client"
+    echo -e "\t-f <path>\tpath to list of clients to be updated"
+    echo -e "REQUIRED:\n\t-m <mediasrv>\tmedia server to add"
     exit 1
 }
 
@@ -32,6 +34,7 @@ while getopts "c:f:m:p:" o; do
             ;;
         p)
             POLICY=${OPTARG}
+            ;;
         *)
             usage
             ;;
@@ -72,6 +75,7 @@ fi
 if [ ! -z "$POLICY" ]; then
     CLIENTS=`$BPPLLISTBIN $POLICY -l|grep ^CLIENT|awk '{print $2}'`
     for client in $CLIENTS; do
+        echo "Updating $client with new list"
         new_mediasrvlist $client | $BPSETCONFIGBIN -h $client 2>&1 >/dev/null
     done
 fi
