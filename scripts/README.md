@@ -7,6 +7,7 @@ Complements the binary that is shipped with NetBackup (add_media_server_on_clien
 This script however adds a single media server (for now) onto a selection of clients. The selection is made either by specifying a single client, selecting all clients in a policy, or all clients in a file (separated by newline)
 
 Example:
+
     Usage: add_mediasrv2client.sh [-c <client>/-f <path>/-p <policy>] -m <mediasrv>
     At least ONE of the following:
         -p <policy>     specifies all clients in that policy
@@ -18,6 +19,8 @@ Example:
 
 # clientsidededup.sh
 Complements the script shipped with NetBackup by adding more flexibility in client selection and more options.
+
+Example:
 
     Usage: clientsidededup.sh [-c <client>/-f <path>/-p <policy>] -s <prefclient/clientside/mediasrv>
     At least ONE of the following:
