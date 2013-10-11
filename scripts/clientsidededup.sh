@@ -60,6 +60,8 @@ function set_needsaction {
             ;;
     esac
 }
+
+# Set dedup setting for client
 function set_clientsidededup {
     c=$1
     s=$2
@@ -79,6 +81,22 @@ function set_clientsidededup {
     esac
     set_needsaction $c
     $BPCLIENTBIN -client $c $needsaction -client_direct $dedupval
+}
+
+function get_clientsidededup {
+    c=$1
+    cval=`$BPCLIENTBIN -client $c -l|sed -n '/\([0-9] \)/p'|awk '{print $12}'`
+    case "${cval}" in
+        0)
+            # Deduplicate on the media server or move data via media server
+            ;;
+        1)
+            # Prefer to use client-side deduplication or prefer to move data direct to storage
+            ;;
+        2)
+            # Always use client-side deduplication or always move data direct to storage
+            ;;
+    esac
 }
 
 if [ -z "$SETTING" ]; then
