@@ -1,4 +1,4 @@
-netbackup-scripts
+netbackup-misc
 =================
 
-Various NetBackup related scripts
+Various NetBackup related scripts and other things
