@@ -65,9 +65,10 @@ sub main
 	@excludelist = &get_excludes($client);
 	print Dumper(@excludelist);
 	$newexclude = $opt{'e'};
-	#$newexclude =~ s/\\/\\\\/g;
+	$newexclude =~ s/\\/\\\\/g;
 	#&debug(1, "New exclude to add $newexclude")
 	#&debug(1, "Excludelist before addition: @excludelist");
+	my @newlist;
 	foreach (@excludelist) 
 	{
 		if ($_ =~ m/($newexclude)/)
