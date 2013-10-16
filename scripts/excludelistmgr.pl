@@ -61,27 +61,21 @@ sub get_excludes
 sub main
 {
 	local $client = $opt{'c'};
-	#&debug(1, "Client: $client");
 	@excludelist = &get_excludes($client);
 	print Dumper(@excludelist);
 	$newexclude = $opt{'e'};
+
+	# Fix backslashes
 	$newexclude =~ s/\\/\\\\/g;
-	#&debug(1, "New exclude to add $newexclude")
-	#&debug(1, "Excludelist before addition: @excludelist");
-	my @newlist;
-	foreach (@excludelist) 
+	foreach (@excludelist)
 	{
-		if ($_ =~ m/($newexclude)/)
-		{
-			&debug(1, "New exclude \($newexclude\) already in list, skipping");
-		}
-		else
-		{
-			push(@newlist, $newexclude);
-		}
+		$_ =~ s/\\/\\\\/g;
 	}
-	push(@excludelist, @newlist);
+
+	if (grep $_ eq $newexclude, @excludelist)
+	{
+		push(@excludelist, $_);
+	}
 	print Dumper(@excludelist);
-	#&debug(1, "Excludelist after addition: $excludelist");
 }
 main()
