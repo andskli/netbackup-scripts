@@ -57,25 +57,43 @@ sub get_excludes
     return @output;
 }
 
+# Func stolen from stackoverflow to make array unique
+sub uniq
+{
+    return keys %{{ map { $_ => 1 } @_ }};
+}
+
+sub backslashify
+{
+	$_ =~ s/\//\\\\/g;
+	return $_;
+}
+sub forwardslashify
+{
+	s/\\/\//g;
+	return $_;
+}
 
 sub main
 {
 	local $client = $opt{'c'};
 	@excludelist = &get_excludes($client);
-	print Dumper(@excludelist);
-	$newexclude = $opt{'e'};
+	#print Dumper(@excludelist);
+	$newexclude = 'EXCLUDE = '.$opt{'e'};
 
-	# Fix backslashes
-	$newexclude =~ s/\\/\\\\/g;
+	push(@excludelist, $newexclude);
 	foreach (@excludelist)
 	{
-		$_ =~ s/\\/\\\\/g;
+		&forwardslashify($_);
+		#chomp;
 	}
 
-	if (grep $_ eq $newexclude, @excludelist)
-	{
-		push(@excludelist, $_);
-	}
-	print Dumper(@excludelist);
+	my @newlist = &uniq(@excludelist);
+
+	print Dumper(@newlist);
+	my $longstr = join("\n", @newlist);
+	my $longcmd = 'echo -e \''.$longstr.'\' | '.$bpsetconfigbin.' -h '.$client.' 2>1& >/dev/null';
+	print `$longcmd`;
 }
+
 main()
