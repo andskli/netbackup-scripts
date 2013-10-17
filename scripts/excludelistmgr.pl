@@ -4,6 +4,8 @@
 #
 # Author: Andreas Skarmutsos Lindh
 #
+# Needs fix for backslashed excludelists so that \b works properly. (windows)
+#
 
 #use strict;
 use warnings;
