@@ -1,5 +1,6 @@
 scripts
 =======
+_DISCLAIMER:_ These scripts are _not_ quality assured and properly tested. Please only use them if you know what you're in to. I do _not_ take responsibility for your potentially broken backup environment.
 
 # add_mediasrv2client.sh
 Complements the binary that is shipped with NetBackup (add_media_server_on_clients), which is not properly documentet nor flexible in the way that it adds _all_ available media servers to the clients specified.
