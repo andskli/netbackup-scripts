@@ -6,6 +6,9 @@
 # Usage example:
 #	./backupsearch.pl -t 13 -s 10/01/2013 -e 10/03/2013 -p Windows_policy_name -f "/C/Temp"
 # 
+# TODO:
+#	Improve help with current policy type output
+#
 
 #use strict;
 use warnings;
