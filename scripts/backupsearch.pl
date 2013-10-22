@@ -60,17 +60,13 @@ sub output_usage
 								20	FlashBackup
 								21	Split-Mirror
 								22	AFS
-								23	DFS
 								24	DataStore
 								25	Lotus-Notes
-								26	NCR-Teradata
-								27	OpenVMS
 								28	MPE/iX
 								29	FlashBackup-Windows
 								30	Vault
 								31	BE-MS-SQL-Server
 								32	BE-MS-Exchange-Server
-								33	Macintosh - Not active, use Standard (0) for Macintosh OSX clients.
 								34	Disk Staging
 								35	NBU-Catalog
 		-d 					Debug.
