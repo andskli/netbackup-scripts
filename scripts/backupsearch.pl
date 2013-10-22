@@ -89,6 +89,7 @@ sub debug
 	}
 }
 
+# Find clients in selected policy, takes one argument
 sub clients_in_policy
 {
 	my $policyname = $_[0];
@@ -105,7 +106,7 @@ sub clients_in_policy
 	return @out;
 }
 
-# If matched return 0, else return 1.
+# searches after pattern with specified options, return status code of command
 sub search
 {
 	my $client = $_[0];
@@ -114,25 +115,22 @@ sub search
 	my $enddate = $_[3];
 	my $searchstr = $_[4];
 
-	# bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "MyFirstMovie.avi"
+	# bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "/C/Temp"
 	my $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'" 2>1 >/dev/null';
 	system($cmd);
-	return $?;
+	return $?; # return status code of cmd
 }
 
 sub main
 {
 	my @matched;
-	# Main logic goes here
 	my @clients = &clients_in_policy($opt{'p'});
-	#print Dumper(@clients);
 	foreach $client (@clients)
 	{
 		my $ret = &search($client, $opt{'t'}, $opt{'s'}, $opt{'e'}, $opt{'f'});
 		if ($ret == 0)
 		{
-			#print "Match on $client\n";
-			push(@matched, $client);
+			push(@matched, $client); # push matched client into array
 		}
 	}
 	if (length(@matched))
