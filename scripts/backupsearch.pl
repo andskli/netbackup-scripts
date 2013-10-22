@@ -115,7 +115,14 @@ sub search
 	my $searchstr = $_[4];
 
 	# bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "/C/Temp"
-	my $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'" 2>1 >/dev/null';
+	if ($opt{'d'})
+	{
+		my $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'"';
+	}
+	else
+	{
+		my $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'" 2>1 >/dev/null';	
+	}
 	system($cmd);
 	return $?; # return status code of cmd
 }
