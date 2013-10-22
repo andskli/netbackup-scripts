@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # Search NetBackup backups for specific file
 #
-# Author: Andreas Skarmutsos Lindh
+# Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
 # Usage example:
 #	./backupsearch.pl -t 13 -s 10/01/2013 -e 10/03/2013 -p Windows_policy_name -f "/C/Temp"
