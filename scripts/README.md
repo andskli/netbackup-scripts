@@ -33,3 +33,6 @@ Simple script for expiring media (untested)
 
 # excludelistmgr.pl
 Manage excludelists for multiple NetBackup clients.
+
+# backupsearch.pl
+Search entire policy for clients with a backup between date X and Y containing a specific string
