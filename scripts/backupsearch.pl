@@ -137,7 +137,7 @@ sub main
 	}
 	if (length(@matched))
 	{
-		print "Matched string ".$opt{'f'}." on the following clients:\n";
+		print "Matched string ".$opt{'f'}." on the following clients in policy ".$opt{'p'}.":\n";
 		foreach (@matched)
 		{
 			print "\t\t".$_."\n";
