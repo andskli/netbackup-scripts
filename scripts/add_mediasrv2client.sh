@@ -4,6 +4,9 @@
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
+# TODO: Allow multiple media servers added in one cmd to minimize client
+# communications
+#
 
 ME="$(basename "$0")"
 
