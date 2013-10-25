@@ -46,7 +46,6 @@ sub debug
 	}
 }
 
-# Some basic functions
 
 # Select what to get from bpgetconfig
 # &bpgetconfig("xyz.zz.hm.com", "SERVER")
@@ -54,10 +53,11 @@ sub get_excludes
 {
 	$client = $_[0];
 	$type = "EXCLUDE";
-	#&debug(1, "Calling: $bpgetconfigbin -M $client $type");
+	&debug(1, "Calling: $bpgetconfigbin -M $client $type");
 	my @output = `$bpgetconfigbin -M $client $type`;
     return @output;
 }
+
 
 # Func stolen from stackoverflow to make array unique
 sub uniq
@@ -65,6 +65,8 @@ sub uniq
     return keys %{{ map { $_ => 1 } @_ }};
 }
 
+
+# Functions reversing back/forward-slashes
 sub backslashify
 {
 	$_ =~ s/\//\\\\/g;
@@ -76,18 +78,17 @@ sub forwardslashify
 	return $_;
 }
 
+
 sub main
 {
 	local $client = $opt{'c'};
 	@excludelist = &get_excludes($client);
-	#print Dumper(@excludelist);
 	$newexclude = 'EXCLUDE = '.$opt{'e'};
 
 	push(@excludelist, $newexclude);
 	foreach (@excludelist)
 	{
 		&forwardslashify($_);
-		#chomp;
 	}
 
 	my @newlist = &uniq(@excludelist);
