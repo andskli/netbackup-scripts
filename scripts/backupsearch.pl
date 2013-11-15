@@ -1,5 +1,6 @@
 #!/usr/bin/perl
-# Search NetBackup backups for specific file
+# Search NetBackup backups for specific file om a policy.
+# Handy if looking for old backup files where clients have changed
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
@@ -7,7 +8,8 @@
 #	./backupsearch.pl -t 13 -s 10/01/2013 -e 10/03/2013 -p Windows_policy_name -f "/C/Temp"
 # 
 # TODO:
-#	Improve help with current policy type output
+#	- Improve help with current policy type output
+#	- Search specific client
 #
 
 #use strict;
