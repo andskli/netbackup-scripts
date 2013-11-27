@@ -4,6 +4,9 @@
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
+# References:
+#   Backup type index: http://www.symantec.com/business/support/index?page=content&id=TECH27299
+#
 # Usage example:
 #	./backupsearch.pl -t 13 -s 10/01/2013 -e 10/03/2013 -p Windows_policy_name -f "/C/Temp"
 # 
