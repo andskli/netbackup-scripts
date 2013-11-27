@@ -18,7 +18,8 @@ function usage {
     echo -e "\t-p <policy>\tspecifies all clients in that policy"
     echo -e "\t-c <client>\tname of client"
     echo -e "\t-f <path>\tpath to list of clients to be updated"
-    echo -e "REQUIRED:\n\t-s\tSpecify prefclient to prefer client side dedup, clientside for"
+    echo -e "REQUIRED:"
+    echo -e "\t-s\tSpecify prefclient to prefer client side dedup, clientside for"
     echo -e "\t\tclient side deuplication or mediasrv for media server dedup."
     exit 1
 }
