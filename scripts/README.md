@@ -29,7 +29,7 @@ Complements the script shipped with NetBackup by adding more flexibility in clie
                 client side deuplication or mediasrv for media server dedup.
 
 # expiremedia.sh
-Simple script for expiring media (untested)
+Simple script for expiring media
 
 # excludelistmgr.pl
 Manage excludelists for multiple NetBackup clients.
