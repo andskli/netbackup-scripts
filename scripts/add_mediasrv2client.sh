@@ -15,12 +15,13 @@ BPSETCONFIGBIN=/usr/openv/netbackup/bin/admincmd/bpsetconfig
 BPPLLISTBIN=/usr/openv/netbackup/bin/admincmd/bppllist
 
 function usage {
-    echo "Usage: $ME [-c <client>/-f <path>/-p <policy>] -m <mediasrv>"
-    echo -e "At least ONE of the following:"
+    echo "Usage: ./$ME [-c <client>/-f <path>/-p <policy>] -m <mediasrv>"
+    echo -e "Specify at least ONE of the following:"
     echo -e "\t-p <policy>\tspecifies all clients in that policy"
     echo -e "\t-c <client>\tname of client"
     echo -e "\t-f <path>\tpath to list of clients to be updated"
-    echo -e "REQUIRED:\n\t-m <mediasrv>\tmedia server to add"
+    echo -e "REQUIRED:"
+    echo -e "\t-m <mediasrv>\tmedia server to add"
     exit 1
 }
 
