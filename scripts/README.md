@@ -35,4 +35,11 @@ Simple script for expiring media (untested)
 Manage excludelists for multiple NetBackup clients.
 
 # backupsearch.pl
-Search entire policy for clients with a backup between date X and Y containing a specific string
+Search entire policy for clients with a backup between date X and Y containing a specific string. Use forward
+slashes for search in windows like manner (see example).
+Example:
+
+    ./backupsearch.pl -t 13 -s 11/01/2013 -e 11/27/2013 -p <policy_name> -f "/C/Temp"
+
+
+
