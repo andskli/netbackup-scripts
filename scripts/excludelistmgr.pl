@@ -2,9 +2,7 @@
 #
 # Manage NetBackup client exclude lists for multiple clients at once.
 #
-# Author: Andreas Skarmutsos Lindh
-#
-# Needs fix for backslashed excludelists so that \b works properly. (windows)
+# Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
 
 #use strict;
@@ -81,22 +79,30 @@ sub forwardslashify
 
 sub main
 {
-	local $client = $opt{'c'};
-	@excludelist = &get_excludes($client);
-	$newexclude = 'EXCLUDE = '.$opt{'e'};
+    	local $client = $opt{'c'};
+    	@excludelist = &get_excludes($client);
+    	$newexclude = 'EXCLUDE = '.$opt{'e'};
 
-	push(@excludelist, $newexclude);
-	foreach (@excludelist)
-	{
-		&forwardslashify($_);
-	}
+        push(@excludelist, "$newexclude\n");
+    	#foreach (@excludelist)
+    	#{
+    	#   &forwardslashify($_);
+    	#}
 
-	my @newlist = &uniq(@excludelist);
+        my @newlist = &uniq(@excludelist);
 
-	print Dumper(@newlist);
-	my $longstr = join("\n", @newlist);
-	my $longcmd = 'echo -e \''.$longstr.'\' | '.$bpsetconfigbin.' -h '.$client.' 2>1& >/dev/null';
-	print `$longcmd`;
+        print Dumper(@newlist);
+
+    	# Must write tmpfile to be able to handle this shit.
+    	my $tmpfile = `mktemp`;
+    	open(FH, ">>$tmpfile") or die("Cant open $tmpfile: $!");
+    	foreach (@newlist) {
+	        print FH $_;
+    	}
+    	close FH;
+    	my $longcmd = $bpsetconfigbin.' -h '.$client.' '.$tmpfile.' 2>&1 >/dev/null';
+    	print `$longcmd`;
+    	unlink $tmpfile or die("Cant remove file $tmpfile");
 }
 
 main()
