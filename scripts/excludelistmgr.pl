@@ -14,6 +14,8 @@ my $bpgetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpgetconfig";
 my $bpsetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpsetconfig";
 my $bppllistbin = "/usr/openv/netbackup/bin/admincmd/bppllist";
 
+my @tmpfiles;
+
 my %opt;
 getopts('a:p:c:f:e:dh?', \%opt) or output_usage();
 output_usage() if $opt{'h'};
@@ -102,6 +104,7 @@ sub make_tempfile
 {
 	my (@excludes) = @{$_[0]};
 	my $tmp = `mktemp`;
+	chomp $tmp;
 	&debug(1, "Created: $tmp");
 
 	open(FH, ">>$tmp") or die "Can't open $tmp: $!";
@@ -122,13 +125,10 @@ sub push_excludes
 
 	my $cmd = $bpsetconfigbin.' -h '.$client.' '.$tmpfile.' 2>&1 >/dev/null';
 	print `$cmd`;
-
-	#unlink $tmpfile or die "Can't remove file $tmpfile: $!"; # rm tempfile
 }
 
 sub main
 {
-
 	# Figure out what clients to operate on
 	my @clients;
 	if ($opt{'c'}) # if -c is set, one client
@@ -152,7 +152,7 @@ sub main
 	{
 		foreach $client (@clients)
 		{
-			print("Excludes for client $client:\n");
+			print "Excludes for client $client:\n";
 			print &get_excludes($client);
 		}
 	}
@@ -169,6 +169,7 @@ sub main
 			}
 			my $f = &make_tempfile(\@excludes);
 			&push_excludes($client, $f);
+			push(@tmpfiles, $f);
 		}
 	}
 	# If we replace, just push the new exclude.
@@ -178,6 +179,7 @@ sub main
 		{
 			my $f = &make_tempfile(\@excludes);
 			&push_excludes($client, $f);
+			push(@tmpfiles, $f);
 		}
 	}
 	# Delete
@@ -198,9 +200,16 @@ sub main
 			}
 			
 			my $f = &make_tempfile(\@excludes);
+			&push_excludes($client, $f);
+			push(@tmpfiles, $f);
 		}
 	}
-	
+	# Cleanup tempfiles
+	foreach my $f (@tmpfiles)
+	{
+		&debug(1, "Trying to delete [".$f."]");
+		unlink $f or warn "Could not unlink $f: $!";
+	}
 }
 
 main()
