@@ -135,10 +135,10 @@ sub search
 sub main
 {
 	my @matched;
-	my @clients = &clients_in_policy($opt{'p'});
+	my @clients = clients_in_policy($opt{'p'});
 	foreach $client (@clients)
 	{
-		my $ret = &search($client, $opt{'t'}, $opt{'s'}, $opt{'e'}, $opt{'f'});
+		my $ret = search($client, $opt{'t'}, $opt{'s'}, $opt{'e'}, $opt{'f'});
 		if ($ret == 0)
 		{
 			push(@matched, $client); # push matched client into array
@@ -154,4 +154,4 @@ sub main
 	}
 }
 
-&main()
+main()
