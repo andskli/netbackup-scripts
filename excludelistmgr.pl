@@ -27,7 +27,7 @@ sub output_usage
 	Options:
 
 	Mandatory:
-		-a <get/add/del>	Action to perform
+		-a <get/add/del/set>	Action to perform
 	One of the following:
 		-c <client>					Client which will be affected
 		-p <policy>					Policy to work on
@@ -81,6 +81,7 @@ sub get_clients_in_policy
 		{
 			@p = split /\s+/, $_;
 			push(@out, $p[1]);
+			&debug(1, "found client $p[1] in $policyname");
 		}
 	}
 	return @out;
@@ -137,7 +138,10 @@ sub main
 	}
 	if ($opt{'p'}) # if -p, we specify a policy
 	{
-		my @clients = &get_clients_in_policy($opt{'p'});
+		foreach (&get_clients_in_policy($opt{'p'}))
+		{
+			push(@clients, $_);
+		}
 	}
 
 	# Figure out exclude input
@@ -152,8 +156,13 @@ sub main
 	{
 		foreach $client (@clients)
 		{
+			&debug(1, "processing $client");
+			my @client_excludes = &get_excludes($client);
 			print "Excludes for client $client:\n";
-			print &get_excludes($client);
+			foreach (@client_excludes)
+			{
+				print "\t$_";
+			}
 		}
 	}
 	# If we want to add exclude we have to loop thru each client
@@ -162,18 +171,24 @@ sub main
 		foreach $client (@clients)
 		{
 			# Fetch existing client excludes and push them into @excludes list
+			my @new_excludes;
 			my @existing = &get_excludes($client);
 			foreach $exclude (@existing)
 			{
-				push(@excludes, "$exclude\n");
+				push(@new_excludes, "$exclude\n");
 			}
-			my $f = &make_tempfile(\@excludes);
+			foreach (@excludes)
+			{
+				push(@new_excludes, $_);
+			}
+			my $f = &make_tempfile(\@new_excludes);
 			&push_excludes($client, $f);
 			push(@tmpfiles, $f);
+			undef(@new_excludes);
 		}
 	}
 	# If we replace, just push the new exclude.
-	if ($opt{'a'} eq "replace")
+	if ($opt{'a'} eq "set")
 	{
 		foreach $client (@clients)
 		{
@@ -183,25 +198,26 @@ sub main
 		}
 	}
 	# Delete
-	if ($opt{'a'} eq "delete")
+	if ($opt{'a'} eq "del")
 	{
 		foreach $client (@clients)
 		{
 			my @existing = &get_excludes($client);
 			my @excludes_to_remove = @excludes;
-			my @excludes;
+			my @new_excludes;
 
-			foreach $toremove (@excludes_to_remove)
+			foreach $to_remove (@excludes_to_remove)
 			{
 				for (my $i = 0; $i <= $#existing; $i++)
 				{
-					push(@excludes, $existing[$i]) if $existing[$i] ne $toremove;
+					push(@new_excludes, $existing[$i]) if $existing[$i] ne $to_remove;
 				}
 			}
 			
-			my $f = &make_tempfile(\@excludes);
+			my $f = &make_tempfile(\@new_excludes);
 			&push_excludes($client, $f);
 			push(@tmpfiles, $f);
+			undef(@new_excludes);
 		}
 	}
 	# Cleanup tempfiles
