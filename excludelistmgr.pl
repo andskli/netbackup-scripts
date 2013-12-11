@@ -161,7 +161,7 @@ sub main
 
 		foreach (@filedata)
 		{
-			print $_;
+			&debug(1, "Found row containing [".$_."] in $opt{'f'}");
 			push(@excludes, "EXCLUDE = ".$_."\n");
 		}
 	}
@@ -196,6 +196,7 @@ sub main
 			{
 				push(@new_excludes, $_);
 			}
+			&uniq(@new_excludes);
 			my $f = &make_tempfile(\@new_excludes);
 			&push_excludes($client, $f);
 			push(@tmpfiles, $f);
@@ -207,6 +208,7 @@ sub main
 	{
 		foreach $client (@clients)
 		{
+			&uniq(@excludes);
 			my $f = &make_tempfile(\@excludes);
 			&push_excludes($client, $f);
 			push(@tmpfiles, $f);
@@ -217,22 +219,10 @@ sub main
 	{
 		foreach $client (@clients)
 		{
-			my @existing = &get_excludes($client);
-			my @excludes_to_remove = @excludes;
-			my @new_excludes;
-
-			foreach $to_remove (@excludes_to_remove)
+			foreach $to_del (@excludes)
 			{
-				for (my $i = 0; $i <= $#existing; $i++)
-				{
-					push(@new_excludes, $existing[$i]) if $existing[$i] ne $to_remove;
-				}
+				# logic goes here.
 			}
-			
-			my $f = &make_tempfile(\@new_excludes);
-			&push_excludes($client, $f);
-			push(@tmpfiles, $f);
-			undef(@new_excludes);
 		}
 	}
 	# Cleanup tempfiles
