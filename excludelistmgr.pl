@@ -146,9 +146,24 @@ sub main
 
 	# Figure out exclude input
 	my @excludes;
-	if ($opt{'e'})
+	if ($opt{'e'}) # use string, preferrably '<string>'
 	{
 		push(@excludes, "EXCLUDE = ".$opt{'e'}."\n");
+	}
+	if ($opt{'f'}) # use file
+	{
+		my @filedata = do
+		{
+			open my $fh, "<", $opt{'f'}
+				or die "could not open $opt{'f'}: $!";
+			<$fh>;
+		};
+
+		foreach (@filedata)
+		{
+			print $_;
+			push(@excludes, "EXCLUDE = ".$_."\n");
+		}
 	}
 
 	# get - fetch excludes and echo to stdout
