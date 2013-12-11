@@ -54,7 +54,7 @@ sub debug
 # Func stolen from stackoverflow to make array unique
 sub uniq
 {
-    return keys %{{ map { $_ => 1 } @_ }};
+	return keys %{{ map { $_ => 1 } @_ }};
 }
 
 # Functions reversing back/forward-slashes
@@ -95,7 +95,7 @@ sub get_excludes
 	$type = "EXCLUDE";
 	&debug(1, "Calling: $bpgetconfigbin -M $client $type");
 	my @output = `$bpgetconfigbin -M $client $type`;
-    return @output;
+	return @output;
 }
 
 # Write excludelist to tempfile
