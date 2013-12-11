@@ -32,7 +32,11 @@ Complements the script shipped with NetBackup by adding more flexibility in clie
 Simple script for expiring media
 
 # excludelistmgr.pl
-Manage excludelists for multiple NetBackup clients.
+Manage excludelists for multiple NetBackup clients (windows only for now)
+
+Currently it performs:
+* Addition of single exclude specified on command line on either a single client or a specified policy
+* Addition of all excludes specified in a file on either a single client or a specified policy
 
 # backupsearch.pl
 Search entire policy for clients with a backup between date X and Y containing a specific string. Use forward
