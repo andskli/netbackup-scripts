@@ -10,9 +10,22 @@ use warnings;
 use Getopt::Std;
 use Data::Dumper;
 
-my $bpgetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpgetconfig";
-my $bpsetconfigbin = "/usr/openv/netbackup/bin/admincmd/bpsetconfig";
-my $bppllistbin = "/usr/openv/netbackup/bin/admincmd/bppllist";
+# Check OS and adjust netbackup executable binaries accordingly
+my $operating_system = $^O;
+if ($operating_system eq "MSWin32")
+{
+	my $installpath = "\"C:\\Program Files\\Veritas\\NetBackup";
+	our $bpgetconfigbin = $installpath."\\bin\\admincmd\\bpgetconfig\"";
+	our $bpsetconfigbin = $installpath."\\bin\\admincmd\\bpsetconfig\"";
+	our $bppllistbin = $installpath."\\bin\\admincmd\\bppllist\"";
+}
+elsif ($operating_system eq "linux")
+{
+	my $installpath = "/usr/openv/netbackup";
+	our $bpgetconfigbin = $installpath."/bin/admincmd/bpgetconfig";
+	our $bpsetconfigbin = $installpath."/bin/admincmd/bpsetconfig";
+	our $bppllistbin = $installpath."/bin/admincmd/bppllist";
+}
 
 my @tmpfiles;
 
@@ -104,11 +117,21 @@ sub get_excludes
 sub make_tempfile
 {
 	my (@excludes) = @{$_[0]};
-	my $tmp = `mktemp`;
+	my $tmp;
+	if ($operating_system eq "MSWin32")
+	{
+		my $randnum = int(rand(10000));
+		$tmp = "C:\\tmpfile_".$randnum;
+	}
+	else
+	{
+		my $tmp = `mktemp`;
+	}
+	
 	chomp $tmp;
-	debug(1, "Created: $tmp");
+	debug(1, "Tmpfile: $tmp");
 
-	open(FH, ">>$tmp") or die "Can't open $tmp: $!";
+	open(FH, ">>", $tmp) or die "Can't open $tmp: $!";
 	foreach (@excludes)
 	{
 		print FH $_;
