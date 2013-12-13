@@ -25,7 +25,7 @@ Manage excludelists for multiple NetBackup clients. Script tested on Linux & Win
 # mediasrvmgr.pl
 Manage media servers for clients (policy/single client), add/del using specific media server or file containing media servers wanted.
 
-Usage: mediasrvmgr.pl [options]
+    Usage: mediasrvmgr.pl [options]
 
     Mandatory:
             -a <get/add/del>        Action to perform
