@@ -1,4 +1,4 @@
-scripts
+netbackup-scripts
 =======
 _DISCLAIMER:_ These scripts are _not_ quality assured and properly tested. Please only use them if you know what you're in to. I do _not_ take responsibility for your potentially broken backup environment.
 
