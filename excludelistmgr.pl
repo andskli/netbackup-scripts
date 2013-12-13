@@ -9,7 +9,10 @@
 use warnings;
 use Getopt::Std;
 use Data::Dumper;
+use File::Temp;
 
+
+my $windows_temppath = "C:\\Temp";
 # Check OS and adjust netbackup executable binaries accordingly
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
@@ -117,27 +120,32 @@ sub get_excludes
 sub make_tempfile
 {
 	my (@excludes) = @{$_[0]};
-	my $tmp;
-	if ($operating_system eq "MSWin32")
+	
+	if ($operating_system eq 'MSWin32')
 	{
-		my $randnum = int(rand(10000));
-		$tmp = "C:\\tmpfile_".$randnum;
+		$tmppath = $windows_temppath;
 	}
 	else
 	{
-		my $tmp = `mktemp`;
+		$tmppath = '/tmp';
 	}
 	
-	chomp $tmp;
-	debug(1, "Tmpfile: $tmp");
+	my $tmp = File::Temp->new(
+		TEMPLATE => 'tmpXXXXX',
+		DIR => $tmppath,
+		SUFFIX => '.dat',
+		UNLINK => 0);
+	
+	chomp($tmp);
+	debug(1, "Tmpfile: [$tmp]");
 
-	open(FH, ">>", $tmp) or die "Can't open $tmp: $!";
 	foreach (@excludes)
 	{
-		print FH $_;
+		chomp;
+		debug(2, "Printing $_ into [$tmp]");
+		print $tmp $_;
 	}
-	close FH;
-
+	debug(1, "Returning $tmp from make_tempfile()");
 	return $tmp;
 }
 
@@ -147,7 +155,7 @@ sub push_excludes
 	my $client = $_[0];
 	my $tmpfile = $_[1];
 
-	my $cmd = $bpsetconfigbin.' -h '.$client.' '.$tmpfile.' 2>&1 >/dev/null';
+	my $cmd = $bpsetconfigbin.' -h '.$client.' '.$tmpfile;
 	print `$cmd`;
 }
 
