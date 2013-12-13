@@ -141,9 +141,9 @@ sub make_tempfile
 
 	foreach (@excludes)
 	{
-		chomp;
+		chomp($_);
 		debug(2, "Printing $_ into [$tmp]");
-		print $tmp $_;
+		print $tmp "$_\n";
 	}
 	debug(1, "Returning $tmp from make_tempfile()");
 	return $tmp;
@@ -179,7 +179,7 @@ sub main
 	my @excludes;
 	if ($opt{'e'}) # use string, preferrably '<string>'
 	{
-		push(@excludes, "EXCLUDE = ".$opt{'e'}."\n");
+		push(@excludes, "EXCLUDE = ".$opt{'e'});
 	}
 	if ($opt{'f'}) # use file
 	{
@@ -192,8 +192,9 @@ sub main
 
 		foreach (@filedata)
 		{
+			chomp($_);
 			debug(1, "Found row containing [".$_."] in $opt{'f'}");
-			push(@excludes, "EXCLUDE = ".$_."\n");
+			push(@excludes, "EXCLUDE = $_");
 		}
 	}
 
@@ -221,7 +222,7 @@ sub main
 			my @existing = get_excludes($client);
 			foreach $exclude (@existing)
 			{
-				push(@new_excludes, "$exclude\n");
+				push(@new_excludes, $exclude);
 			}
 			foreach (@excludes)
 			{
@@ -250,10 +251,20 @@ sub main
 	{
 		foreach $client (@clients)
 		{
-			foreach $to_del (@excludes)
+			my @existing = get_excludes($client);
+			
+			my @new_excludes = grep { my $x = $_; not grep { $x =~ /\Q$_/i } @excludes } @existing;
+			if ($#new_excludes < 1)
 			{
-				# logic goes here.
+				die "Removing ALL excludes. Not implemented yet, thus not executing\n";
 			}
+
+			debug(1, "New excludelist: $new_excludes");
+			uniq(@new_excludes);
+			my $f = make_tempfile(\@new_excludes);
+			push_excludes($client, $f);
+			push(@tmpfiles, $f);
+			undef(@new_excludes);
 		}
 	}
 	# Cleanup tempfiles
