@@ -40,19 +40,16 @@ sub output_usage
 {
 	my $usage = "Usage: $0 [options]
 
-	Options:
+Mandatory:
+	-a <get/add/del/set>	Action to perform
+One of the following:
+	-c <client>		Client which will be affected
+	-p <policy>		Policy to work on
+One of the following:
+	-e <exclude string>		String to exclude
+	-f <path>		file with excludes, one on each line
 
-	Mandatory:
-		-a <get/add/del/set>	Action to perform
-	One of the following:
-		-c <client>					Client which will be affected
-		-p <policy>					Policy to work on
-	One of the following:
-		-e <exclude string>			String to exclude
-		-f <path>					file with excludes, one on each line
-
-		-d 							Debug.
-	\n\n";
+	-d 		Debug.\n";
 
 	die $usage;
 }
@@ -256,7 +253,7 @@ sub main
 			
 			# ugly way to compare and delete between two arrays
 			my @new_excludes = grep { my $x = $_; not grep { $x =~ /\Q$_/i } @excludes } @existing;
-			
+
 			if ($#new_excludes < 1)
 			{
 				die "Removing ALL excludes. Not implemented yet, thus not executing\n";
