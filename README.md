@@ -2,20 +2,6 @@ scripts
 =======
 _DISCLAIMER:_ These scripts are _not_ quality assured and properly tested. Please only use them if you know what you're in to. I do _not_ take responsibility for your potentially broken backup environment.
 
-# add_mediasrv2client.sh
-Complements the binary that is shipped with NetBackup (add_media_server_on_clients), which is not properly documentet nor flexible in the way that it adds _all_ available media servers to the clients specified.
-
-This script however adds a single media server (for now) onto a selection of clients. The selection is made either by specifying a single client, selecting all clients in a policy, or all clients in a file (separated by newline)
-
-    Usage: add_mediasrv2client.sh [-c <client>/-f <path>/-p <policy>] -m <mediasrv>
-    At least ONE of the following:
-        -p <policy>     specifies all clients in that policy
-        -c <client>     name of client
-        -f <path>       path to list of clients to be updated
-    REQUIRED:
-        -m <mediasrv>   media server to add
-
-
 # clientsidededup.sh
 Complements the script shipped with NetBackup by adding more flexibility in client selection and more options.
 
@@ -48,9 +34,22 @@ Manage excludelists for multiple NetBackup clients. Script tested on Linux & Win
             -d              Debug.
 
 
-Currently it performs:
-* Addition of single exclude specified on command line on either a single client or a specified policy
-* Addition of all excludes specified in a file on either a single client or a specified policy
+# mediasrvmgr.pl
+Manage media servers for clients (policy/single client), add/del using specific media server or file containing media servers wanted.
+
+Usage: mediasrvmgr.pl [options]
+
+    Mandatory:
+            -a <get/add/del>        Action to perform
+    One of the following:
+            -c <client>             Client which will be affected
+            -p <policy>             Policy to work on
+    One of the following:
+            -m <media server>               name of media server
+            -f <path>               file with media servers listed
+
+            -d              Debug.
+
 
 # backupsearch.pl
 Search entire policy for clients with a backup between date X and Y containing a specific string. Use forward
