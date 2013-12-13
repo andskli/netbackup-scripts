@@ -2,19 +2,7 @@ scripts
 =======
 _DISCLAIMER:_ These scripts are _not_ quality assured and properly tested. Please only use them if you know what you're in to. I do _not_ take responsibility for your potentially broken backup environment.
 
-# clientsidededup.sh
-Complements the script shipped with NetBackup by adding more flexibility in client selection and more options.
-
-    Usage: clientsidededup.sh [-c <client>/-f <path>/-p <policy>] -s <prefclient/clientside/mediasrv>
-    At least ONE of the following:
-        -p <policy>     specifies all clients in that policy
-        -c <client>     name of client
-        -f <path>       path to list of clients to be updated
-    REQUIRED:
-        -s      Specify prefclient to prefer client side dedup, clientside for
-                client side deuplication or mediasrv for media server dedup.
-
-# expiremedia.sh
+# expiremedia.pl
 Simple script for expiring media
 
 # excludelistmgr.pl
@@ -59,4 +47,5 @@ Example:
     ./backupsearch.pl -t 13 -s 11/01/2013 -e 11/27/2013 -p <policy_name> -f "/C/Temp"
 
 
-
+# clientsidededupmgr.pl
+Manage client side dedup settings for mutliple clients at once instead of using Host Properties->Master Server, which is a total buzzkill when changing settings for a big bunch of clients at once.
