@@ -49,6 +49,7 @@ sub output_usage
 		-p <policy>					Policy to work on
 	One of the following:
 		-e <exclude string>			String to exclude
+		-f <path>					file with excludes, one on each line
 
 		-d 							Debug.
 	\n\n";
@@ -253,13 +254,14 @@ sub main
 		{
 			my @existing = get_excludes($client);
 			
+			# ugly way to compare and delete between two arrays
 			my @new_excludes = grep { my $x = $_; not grep { $x =~ /\Q$_/i } @excludes } @existing;
+			
 			if ($#new_excludes < 1)
 			{
 				die "Removing ALL excludes. Not implemented yet, thus not executing\n";
 			}
 
-			debug(1, "New excludelist: $new_excludes");
 			uniq(@new_excludes);
 			my $f = make_tempfile(\@new_excludes);
 			push_excludes($client, $f);
