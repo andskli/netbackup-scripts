@@ -34,7 +34,7 @@ elsif ($operating_system eq "linux")
 my @tmpfiles;
 
 my %opt;
-getopts('a:p:c:m:e:dh?', \%opt) or output_usage();
+getopts('a:p:c:m:f:dh?', \%opt) or output_usage();
 output_usage() if $opt{'h'};
 
 sub output_usage
