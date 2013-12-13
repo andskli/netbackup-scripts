@@ -12,7 +12,8 @@ use Data::Dumper;
 use File::Temp;
 
 
-my $windows_temppath = "C:\\Temp";
+my $windows_temppath = "C:\\Temp"; # FIXME
+
 # Check OS and adjust netbackup executable binaries accordingly
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
