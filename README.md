@@ -32,7 +32,21 @@ Complements the script shipped with NetBackup by adding more flexibility in clie
 Simple script for expiring media
 
 # excludelistmgr.pl
-Manage excludelists for multiple NetBackup clients (windows only for now)
+Manage excludelists for multiple NetBackup clients. Script tested on Linux & Windows (running VRTSPerl). Operations only performed on Windows clients.. (for unix/linux we should use puppet or similar to manage bp.conf, right? :))
+
+    Usage: excludelistmgr.pl [options]
+
+    Mandatory:
+            -a <get/add/del/set>    Action to perform
+    One of the following:
+            -c <client>             Client which will be affected
+            -p <policy>             Policy to work on
+    One of the following:
+            -e <exclude string>             String to exclude
+            -f <path>               file with excludes, one on each line
+
+            -d              Debug.
+
 
 Currently it performs:
 * Addition of single exclude specified on command line on either a single client or a specified policy
