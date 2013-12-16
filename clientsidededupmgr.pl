@@ -10,8 +10,9 @@ use warnings;
 use Getopt::Std;
 use Data::Dumper;
 use File::Temp;
+use File::Basename;
 
-my $windows_temppath = "C:\\Temp"; # FIXME
+my $windows_temppath = dirname(__FILE__);
 
 # Check which OS we're running on and adjust the script accordingly
 my $operating_system = $^O;

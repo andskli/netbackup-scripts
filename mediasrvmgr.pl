@@ -10,9 +10,9 @@ use warnings;
 use Getopt::Std;
 use Data::Dumper;
 use File::Temp;
+use File::Basename;
 
-
-my $windows_temppath = "C:\\Temp"; # FIXME
+my $windows_temppath = dirname(__FILE__);
 
 # Check OS and adjust netbackup executable binaries accordingly
 my $operating_system = $^O;

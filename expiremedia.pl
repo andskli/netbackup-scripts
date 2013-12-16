@@ -10,8 +10,6 @@ use warnings;
 use Getopt::Std;
 use Data::Dumper;
 
-my $windows_temppath = "C:\\Temp"; # FIXME
-
 # Check OS and adjust netbackup executable binaries accordingly
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
