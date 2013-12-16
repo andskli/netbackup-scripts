@@ -4,6 +4,8 @@
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
+# TODO: Fix output
+#
 
 #use strict;
 use warnings;
@@ -126,11 +128,11 @@ sub set_mode
 sub get_mode
 {
 	my $client = $_[0];
-	print("Getting mode for $client: ");
 	my $output = `$bpclientbin -client $client -L`;
 	chomp($output);
 	foreach my $l (split("\n", $output))
 	{
+		chomp($l);
 		if ($l =~ m/.*Deduplication on the media server or.*/)
 		{
 			debug(1, "Caught mediaserver-mode: $l");
@@ -147,6 +149,8 @@ sub get_mode
 			return "clientside";
 		}
 	}
+	print("Found no info for $client, not added in client attributes\n");
+	return "mediaserver";
 }
 
 sub main
