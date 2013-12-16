@@ -5,6 +5,12 @@
 :: Set perl binary to use
 set perlbin="C:\Program Files\VERITAS\VRTSPerl\bin\perl.exe"
 
+if not exist %perlbin% (
+	echo %perlbin% does not exist, exiting
+	set err=1
+	exit /B %err%
+)
+
 :: Set which script to access
 set command=%*
 
@@ -16,11 +22,10 @@ if exist "%1" (
 
   :: Grab exit status of command
   set err=%errorlevel%
+  exit /B %err%
 ) else (
   echo File not found.
   echo %1
   set err=1
+  exit /B %err%
 )
-  
-:: Exit and pass along our exit code.
-exit /B %err%
