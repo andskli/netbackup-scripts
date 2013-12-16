@@ -34,11 +34,10 @@ sub output_usage
 {
 	my $usage = "Usage: $0 [options]
 
-Mandatory:
-	-f <path>	file containing list of media ID's to be expired
-	-X			force expiration without questions asked
-
-	-d 		Debug.\n";
+Options:
+\t-f <path>\t\tfile containing list of media ID's to be expired
+\t-X\t\t\tforce expiration without questions asked
+\t-d\t\t\tDebug.\n";
 
 	die $usage;
 }
