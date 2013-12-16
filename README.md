@@ -5,6 +5,15 @@ _DISCLAIMER:_ These scripts are _not_ quality assured and properly tested. Pleas
 # expiremedia.pl
 Simple script for expiring media
 
+    $ perl expiremedia.pl -h
+    Usage: expiremedia.pl [options]
+
+    Mandatory:
+        -f <path>   file containing list of media ID's to be expired
+        -X          force expiration without questions asked
+
+        -d      Debug.
+
 # excludelistmgr.pl
 Manage excludelists for multiple NetBackup clients. Script tested on Linux & Windows (running VRTSPerl). Operations only performed on Windows clients.. (for unix/linux we should use puppet or similar to manage bp.conf, right? :))
 
@@ -49,3 +58,17 @@ Example:
 
 # clientsidededupmgr.pl
 Manage client side dedup settings for mutliple clients at once instead of using Host Properties->Master Server, which is a total buzzkill when changing settings for a big bunch of clients at once.
+
+    $ perl clientsidededupmgr.pl -h
+    Usage: clientsidededupmgr.pl [options]
+
+    One of:
+        -p <policy> Name of policy containing clients to update
+        -c <client> Name of client to update
+
+    Mandatory:
+        -s [preferclient/clientside/mediaserver/LIST]   Specify which dedup
+                mode to use on client.
+
+        -d      Debug.
+
