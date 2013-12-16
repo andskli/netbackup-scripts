@@ -42,15 +42,15 @@ sub output_usage
 	my $usage = "Usage: $0 [options]
 
 Mandatory:
-	-a <get/add/del>	Action to perform
+\t-a <action>\t\tAction to perform. Action can be any of add/get/del
 One of the following:
-	-c <client>		Client which will be affected
-	-p <policy>		Policy to work on
+\t-c <client>\t\tClient which will be affected
+\t-p <policy>\t\tPolicy to work on
 One of the following:
-	-m <media server>		name of media server
-	-f <path>		file with media servers listed 
-
-	-d 		Debug.\n";
+\t-m <server>\t\tname of media server
+\t-f <path>\t\tfile with media servers listed 
+Optional:
+\t-d <level>\t\tDebug.\n";
 
 	die $usage;
 }
