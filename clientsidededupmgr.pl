@@ -40,14 +40,12 @@ sub output_usage
 	my $usage = "Usage: $0 [options]
 
 One of:
-	-p <policy>	Name of policy containing clients to update
-	-c <client>	Name of client to update
-
+\t-p <policy>\t\tName of policy containing clients to update
+\t-c <client>\t\tName of client to update
 Mandatory:
-	-s [preferclient/clientside/mediaserver/LIST]	Specify which dedup
-			mode to use	on client.
-
-	-d 		Debug.\n";
+\t-s <action>\t\tSelect one of preferclient/clientside/mediaserver/LIST
+Optional:
+\t-d <level>\t\tDebug.\n";
 
 	die $usage;
 }
