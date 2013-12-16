@@ -30,13 +30,7 @@ my @tmpfiles;
 my %opt;
 getopts('X:f:dh?', \%opt) or output_usage();
 
-if ((!$opt{'X'} or
-	(!$opt{'f'}) or
-	($opt{'?'}) or
-	($opt{'h'}))
-{
-	output_usage();
-}
+if (!$opt{'f'}) { output_usage(); }
 
 sub output_usage
 {
