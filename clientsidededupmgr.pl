@@ -32,10 +32,6 @@ else
 my %opt;
 getopts('c:p:s:dh?', \%opt) or output_usage();
 
-# TODO 
-if (!$opt{'s'}) { output_usage(); }
-if ((!$opt{'c'}) or (!$opt{'p'})) { output_usage(); }
-
 sub output_usage
 {
 	my $usage = "Usage: $0 [options]
@@ -45,7 +41,7 @@ One of:
 	-c <client>	Name of client to update
 
 Mandatory:
-	-s [preferclient/clientside/mediaserver]	Specify which dedup
+	-s [preferclient/clientside/mediaserver/LIST]	Specify which dedup
 			mode to use	on client.
 
 	-d 		Debug.\n";
@@ -104,10 +100,11 @@ sub clientattributes_exists
 # set dedup mode for a client, example: set_mode("abc.def.com", "preferclient")
 sub set_mode 
 {
+	# Dedup modes
 	my %modes = (
 		'mediaserver' => 0,
 		'preferclient' => 1,
-		'clientside' => 2
+		'clientside' => 2,
 	);
 
 	my $client = $_[0];
@@ -124,6 +121,32 @@ sub set_mode
 		$action_needed = "-add";
 	}
 	system("$bpclientbin -client $client $action_needed -client_direct $mode_n");
+}
+
+sub get_mode
+{
+	my $client = $_[0];
+	print("Getting mode for $client: ");
+	my $output = `$bpclientbin -client $client -L`;
+	chomp($output);
+	foreach my $l (split("\n", $output))
+	{
+		if ($l =~ m/.*Deduplication on the media server or.*/)
+		{
+			debug(1, "Caught mediaserver-mode: $l");
+			return "mediaserver";
+		}
+		elsif ($l =~ m/.*Prefer to use client-side deduplication or.*/)
+		{
+			debug(1, "Caught preferclient mode: $l");
+			return "preferclient";
+		}
+		elsif ($l =~ m/.*Always use client-side deduplication or.*/)
+		{
+			debug(1, "Caught always use client side: $l");
+			return "clientside";
+		}
+	}
 }
 
 sub main
@@ -144,10 +167,20 @@ sub main
 
 	# figure out what setting to set
 	my $mode_t = $opt{'s'};
+	debug(1, "Option -s equals $mode_t");
 	foreach my $client (@clients)
 	{
+		if ($mode_t eq "LIST")
+		{
+			debug(1, "Getting mode for $client");
+			my $m = get_mode($client);
+			print("\t$client mode: $m\n");
+		}
+		else
+		{
 		debug(1, "Setting mode $mode_t for $client");
-		set_mode($client, $mode_t);
+		set_mode($client, $mode_t);	
+		}
 	}
 }
 
