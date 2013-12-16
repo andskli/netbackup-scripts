@@ -25,7 +25,7 @@ my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
 {
 	my $installpath = "\"C:\\Program Files\\Veritas\\NetBackup";
-	our $bplistbin = $installpath."\\bin\\admincmd\\bplist\"";
+	our $bplistbin = $installpath."\\bin\\bplist\"";
 	our $bppllistbin = $installpath."\\bin\\admincmd\\bppllist\"";
 }
 elsif ($operating_system eq "linux")
@@ -132,7 +132,7 @@ sub search
 	my $searchstr = $_[4];
 
 	# bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "/C/Temp"
-	
+	print "Searching $client ...\n";
 	$cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'"';
 	
 	system($cmd);
