@@ -43,15 +43,15 @@ sub output_usage
 	my $usage = "Usage: $0 [options]
 
 Mandatory:
-	-a <get/add/del/set>	Action to perform
+\t-a <action>\t\tSpecify get/add/del/set to perform that action on the client set
 One of the following:
-	-c <client>		Client which will be affected
-	-p <policy>		Policy to work on
+\t-c <client>\t\tClient which will be affected
+\t-p <policy>\t\tPolicy to work on
 One of the following:
-	-e <exclude string>		String to exclude
-	-f <path>		file with excludes, one on each line
-
-	-d 		Debug.\n";
+\t-e <string>\t\tString to exclude. I.e. \"C:\\Temp\\*\"
+\t-f <path>\t\tfile with excludes, one on each line
+Optional:
+\t-d <level>\t\tDebug.\n";
 
 	die $usage;
 }
