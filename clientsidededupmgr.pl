@@ -31,15 +31,6 @@ else
 my %opt;
 getopts('c:p:s:dh?', \%opt) or output_usage();
 
-if ((!$opt{'p'} or
-	(!$opt{'s'}) or
-	(!$opt{'c'}) or
-	($opt{'?'}) or
-	($opt{'h'}))
-{
-	output_usage();
-}
-
 sub output_usage
 {
 	my $usage = "Usage: $0 [options]
@@ -108,18 +99,18 @@ sub clientattributes_exists
 # set dedup mode for a client, example: set_mode("abc.def.com", "preferclient")
 sub set_mode 
 {
-	my $client = $_[0];
-	my $mode = $_[1];
-	my $mode_n = $modes{$mode};
-	my $action_needed;
-
 	my %modes = (
 		'mediaserver' => 0,
 		'preferclient' => 1,
 		'clientside' => 2
 	);
 
-	if (clientattributes_exists($client))
+	my $client = $_[0];
+	my $mode = $_[1];
+	my $mode_n = $modes{$mode};
+	my $action_needed;
+
+	if (clientattributes_exists($client) == 0)
 	{
 		$action_needed = "-update";
 	}
