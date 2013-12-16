@@ -109,7 +109,7 @@ sub main
 	}
 	else
 	{
-		die("There was [$#media_names] in the list, exiting.\n");
+		die("There was insufficient in the list, exiting.\n");
 	}
 
 }
