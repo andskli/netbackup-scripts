@@ -18,6 +18,7 @@ if exist "%1" (
   echo %1 exists, using %perlbin% to execute
 
   :: Execute
+  echo Executing %perlbin% %*
   %perlbin% %*
 
   :: Grab exit status of command
