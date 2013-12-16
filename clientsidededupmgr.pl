@@ -31,6 +31,10 @@ else
 my %opt;
 getopts('c:p:s:dh?', \%opt) or output_usage();
 
+# TODO 
+if (!$opt{'s'}) { output_usage(); }
+if ((!$opt{'c'}) or (!$opt{'p'})) { output_usage(); }
+
 sub output_usage
 {
 	my $usage = "Usage: $0 [options]
