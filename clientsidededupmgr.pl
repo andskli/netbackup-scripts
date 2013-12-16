@@ -33,6 +33,7 @@ else
 
 my %opt;
 getopts('c:p:s:dh?', \%opt) or output_usage();
+output_usage() if $opt{'h'};
 
 sub output_usage
 {
@@ -169,7 +170,11 @@ sub main
 		}
 	}
 
-	# figure out what setting to set
+	# check for -s && figure out what setting to set
+    if (!$opt{'s'})
+    {
+        die("You must specify -s option.\n");
+    }
 	my $mode_t = $opt{'s'};
 	debug(1, "Option -s equals $mode_t");
 	foreach my $client (@clients)
