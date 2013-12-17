@@ -7,7 +7,7 @@
 
 #use strict;
 use warnings;
-use Getopt::Std;
+use Getopt::Long;
 use Data::Dumper;
 use File::Temp;
 use File::Basename;
@@ -34,24 +34,34 @@ elsif ($operating_system eq "linux")
 my @tmpfiles;
 
 my %opt;
-getopts('a:p:c:m:f:dh?', \%opt) or output_usage();
-output_usage() if $opt{'h'};
+my $getoptresult = GetOptions(\%opt,
+    "action|a=s" => \$actionopt,
+    "client|c=s" => \$clientopt,
+    "policy|p=s" => \$policyopt,
+    "mediasrv|m=s" => \$mediasrvopt,
+    "file|f=s" => \$fileopt,
+    "help|h|?" => \$help,
+    "debug|d" => \$debug,
+);
+output_usage() if (not $getoptresult);
+output_usage() if ($help);
 
 sub output_usage
 {
-    my $usage = "Usage: $0 [options]
+    my $usage = qq{
+Usage: $0 [options]
 
-Mandatory:
-\t-a <action>\t\tAction to perform. Action can be any of add/get/del
-One of the following:
-\t-c <client>\t\tClient which will be affected
-\t-p <policy>\t\tPolicy to work on
-One of the following:
-\t-m <server>\t\tname of media server
-\t-f <path>\t\tfile with media servers listed 
-Optional:
-\t-d <level>\t\tDebug.\n";
+Options:
+    -a | --action <action>  : Action to perform, may be any of add/get/del
+    -c | --client <name>    : Client that will be affected
+    -p | --policy <name>    : Policy with clients that will be affected
+    -m | --mediasrv <name>  : Name of media server to add/remove from clients
+    -f | --file <path>      : Path to file with media servers which to add/remove
+                            from clients
+    -d | --debug            : debug
+    -h | --help             : display this output
 
+};
     die $usage;
 }
 
@@ -148,13 +158,13 @@ sub main
 {
     # Figure out what clients to operate on
     my @clients;
-    if ($opt{'c'}) # if -c is set, one client
+    if ($clientopt) # if -c is set, one client
     {
-        push(@clients, $opt{'c'});
+        push(@clients, $clientopt);
     }
-    if ($opt{'p'}) # if -p, we specify a policy
+    if ($policyopt) # if -p, we specify a policy
     {
-        foreach (get_clients_in_policy($opt{'p'}))
+        foreach (get_clients_in_policy($policyopt))
         {
             push(@clients, $_);
         }
@@ -162,29 +172,29 @@ sub main
 
     # Figure out media server(s)
     my @serverlist;
-    if ($opt{'m'}) # use string, preferrably '<string>'
+    if ($mediasrvopt) # if -m
     {
-        push(@serverlist, "SERVER = ".$opt{'m'});
+        push(@serverlist, "SERVER = $mediasrvopt");
     }
-    if ($opt{'f'}) # use file
+    if ($fileopt) # use file
     {
         my @filedata = do
         {
-            open my $fh, "<", $opt{'f'}
-                or die "could not open $opt{'f'}: $!";
+            open my $fh, "<", $fileopt
+                or die "could not open $fileopt: $!";
             <$fh>;
         };
 
         foreach (@filedata)
         {
             chomp($_);
-            debug(1, "Found row containing [".$_."] in $opt{'f'}");
+            debug(1, "Found row containing [".$_."] in $fileopt");
             push(@serverlist, "SERVER = $_");
         }
     }
 
     # get - fetch excludes and echo to stdout
-    if ($opt{'a'} eq "get")
+    if ($actionopt eq "get")
     {
         foreach $client (@clients)
         {
@@ -199,7 +209,7 @@ sub main
     }
 
     # If we want to add exclude we have to loop thru each client
-    if ($opt{'a'} eq "add")
+    if ($actionopt eq "add")
     {
         foreach $client (@clients)
         {
@@ -223,7 +233,7 @@ sub main
     }
     
     # Delete
-    if ($opt{'a'} eq "del")
+    if ($actionopt eq "del")
     {
         foreach $client (@clients)
         {
