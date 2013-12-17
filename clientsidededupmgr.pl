@@ -35,7 +35,6 @@ my $getoptresult = GetOptions(\%opt,
     "client|c=s" => \$clientopt,
     "set|s=s" => \$setting,
     "help|h|?" => \$help,
-    "debug|d" => \$debug,
 );
 output_usage() if (not $getoptresult);
 output_usage() if ($help);
@@ -50,7 +49,6 @@ Options:
     -c | --client <name>        : Client to update
     -s | --set <setting>        : Set client side dedup setting to one of the
                             following: preferclient, clientside, mediaserver, LIST
-    -d | --debug                : Debug
     -h | --help                 : Show this help
 
 };
@@ -58,15 +56,6 @@ Options:
     die $usage;
 }
 
-sub debug
-{
-    my $level = $_[0];
-    my $msg = $_[1];
-    if ($debug)
-    {
-        print "<$level> DEBUG: $msg\n";
-    }
-}
 
 # Find clients in selected policy, takes one argument
 sub get_clients_in_policy
@@ -80,7 +69,6 @@ sub get_clients_in_policy
         {
             @p = split /\s+/, $_;
             push(@out, $p[1]);
-            debug(1, "found client $p[1] in $policyname");
         }
     }
     return @out;
@@ -96,12 +84,10 @@ sub clientattributes_exists
     }
     elsif ($? == 0)
     {
-        debug(1, "$client exists and only needs -update");
         return 0;
     }
     else
     {
-        debug(1, "$client does not exist and needs to be -add:ed");
         return 1;
     }
 }
@@ -142,17 +128,14 @@ sub get_mode
         chomp($l);
         if ($l =~ m/.*Deduplication on the media server or.*/)
         {
-            debug(1, "Caught mediaserver-mode: $l");
             return "mediaserver";
         }
         elsif ($l =~ m/.*Prefer to use client-side deduplication or.*/)
         {
-            debug(1, "Caught preferclient mode: $l");
             return "preferclient";
         }
         elsif ($l =~ m/.*Always use client-side deduplication or.*/)
         {
-            debug(1, "Caught always use client side: $l");
             return "clientside";
         }
     }
@@ -181,18 +164,15 @@ sub main
     {
         die("You must specify -s option.\n");
     }
-    debug(1, "Option -s equals $setting");
     foreach my $client (@clients)
     {
         if ($setting eq "LIST")
         {
-            debug(1, "Getting mode for $client");
             my $m = get_mode($client);
             print("\t$client mode: $m\n");
         }
         else
         {
-        debug(1, "Setting mode $setting for $client");
         set_mode($client, $setting); 
         }
     }

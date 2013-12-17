@@ -57,7 +57,6 @@ Example ``./backupsearch.pl -t 13 -s 11/01/2013 -e 11/27/2013 -p <policy_name> -
                                         32  BE-MS-Exchange-Server
                                         34  Disk Staging
                                         35  NBU-Catalog
-        -d | --debug                : debug
         -h | --help                 : show this help
 
 clientsidededupmgr.pl
@@ -73,7 +72,6 @@ Manage client side dedup settings for mutliple clients at once instead of using 
         -c | --client <name>        : Client to update
         -s | --set <setting>        : Set client side dedup setting to one of the
                                 following: preferclient, clientside, mediaserver, LIST
-        -d | --debug                : Debug
         -h | --help                 : Show this help
 
 excludelistmgr.pl
@@ -90,7 +88,6 @@ Manage excludelists for multiple NetBackup clients. Operations only performed on
         -c | --client <name>        : Client to work with
         -e | --exclude <string>     : String to exclude. I.e. "C:\Temp\*"
         -f | --file <path>          : Path to file containing exclude list (newline separation)
-        -d | --debug                : debug
         -h | --help                 : display this output
 
 
@@ -106,7 +103,6 @@ Simple script for expiring media.
 
         -f | --file <path>      : File containing list of media ID's to be expired
         -X | --force            : Force expiration without questions asked
-        -d | --debug <level>    : Debug.
 
 mediasrvmgr.pl
 ------
@@ -123,5 +119,4 @@ Manage media servers for clients (set on policy/single client level), add/del us
         -m | --mediasrv <name>  : Name of media server to add/remove from clients
         -f | --file <path>      : Path to file with media servers which to add/remove
                                 from clients
-        -d | --debug            : debug
         -h | --help             : display this output
