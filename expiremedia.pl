@@ -12,7 +12,6 @@ use Data::Dumper;
 
 my @tmpfiles;
 
-output_usage() if ($#ARGV <= 1);
 my %opt;
 # Handle options
 my $getoptresult = GetOptions(\%opt,
