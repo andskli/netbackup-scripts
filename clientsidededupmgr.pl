@@ -4,12 +4,10 @@
 #
 # Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
 #
-# TODO: Fix output
-#
 
 #use strict;
 use warnings;
-use Getopt::Std;
+use Getopt::Long;
 use Data::Dumper;
 use File::Temp;
 use File::Basename;
@@ -32,20 +30,30 @@ else
 }
 
 my %opt;
-getopts('c:p:s:dh?', \%opt) or output_usage();
-output_usage() if $opt{'h'};
+my $getoptresult = GetOptions(\%opt,
+    "policy|p=s" => \$policyname,
+    "client|c=s" => \$clientopt,
+    "set|s=s" => \$setting,
+    "help|h|?" => \$help,
+    "debug|d" => \$debug,
+);
+output_usage() if (not $getoptresult);
+output_usage() if ($help);
 
 sub output_usage
 {
-    my $usage = "Usage: $0 [options]
+    my $usage = qq{
+Usage: $0 [options]
 
-One of:
-\t-p <policy>\t\tName of policy containing clients to update
-\t-c <client>\t\tName of client to update
-Mandatory:
-\t-s <action>\t\tSelect one of preferclient/clientside/mediaserver/LIST
-Optional:
-\t-d <level>\t\tDebug.\n";
+Options:
+    -p | --policy <name>        : Policy with clients to update
+    -c | --client <name>        : Client to update
+    -s | --set <setting>        : Set client side dedup setting to one of the
+                            following: preferclient, clientside, mediaserver, LIST
+    -d | --debug                : Debug
+    -h | --help                 : Show this help
+
+};
 
     die $usage;
 }
@@ -54,7 +62,7 @@ sub debug
 {
     my $level = $_[0];
     my $msg = $_[1];
-    if ($opt{'d'})
+    if ($debug)
     {
         print "<$level> DEBUG: $msg\n";
     }
@@ -156,28 +164,27 @@ sub main
 {
     # figure out which clients to operate on
     my @clients;
-    if ($opt{'c'}) # if -c is set, juse use one client
+    if ($clientopt) # if -c is set, juse use one client
     {
-        push(@clients, $opt{'c'});
+        push(@clients, $clientopt);
     }
     if ($opt{'p'}) # if -p is set, policy is specified and we need to fetch all clients
     {
-        foreach (get_clients_in_policy($opt{'p'}))
+        foreach (get_clients_in_policy($policyname))
         {
             push(@clients, $_);
         }
     }
 
     # check for -s && figure out what setting to set
-    if (!$opt{'s'})
+    if (!$setting)
     {
         die("You must specify -s option.\n");
     }
-    my $mode_t = $opt{'s'};
-    debug(1, "Option -s equals $mode_t");
+    debug(1, "Option -s equals $setting");
     foreach my $client (@clients)
     {
-        if ($mode_t eq "LIST")
+        if ($setting eq "LIST")
         {
             debug(1, "Getting mode for $client");
             my $m = get_mode($client);
@@ -185,8 +192,8 @@ sub main
         }
         else
         {
-        debug(1, "Setting mode $mode_t for $client");
-        set_mode($client, $mode_t); 
+        debug(1, "Setting mode $setting for $client");
+        set_mode($client, $setting); 
         }
     }
 }
