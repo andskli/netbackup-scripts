@@ -42,7 +42,6 @@ my $getoptresult = GetOptions(\%opt,
     "exclude|e=s" => \$excludeopt,
     "file|f=s" => \$fileopt,
     "help|h|?" => \$help,
-    "debug|d" => \$debug,
 );
 output_usage() if (not $getoptresult);
 output_usage() if ($help);
@@ -58,7 +57,6 @@ Mandatory:
     -c | --client <name>        : Client to work with
     -e | --exclude <string>     : String to exclude. I.e. \"C:\\Temp\\*\"
     -f | --file <path>          : Path to file containing exclude list (newline separation)
-    -d | --debug                : debug
     -h | --help                 : display this output
 
 };
@@ -66,16 +64,6 @@ Mandatory:
     die $usage;
 }
 
-
-sub debug
-{
-    my $level = $_[0];
-    my $msg = $_[1];
-    if ($debug)
-    {
-        print "<$level> DEBUG: $msg\n";
-    }
-}
 
 # Func stolen from stackoverflow to make array unique
 sub uniq
@@ -107,7 +95,6 @@ sub get_clients_in_policy
         {
             @p = split /\s+/, $_;
             push(@out, $p[1]);
-            debug(1, "found client $p[1] in $policyname");
         }
     }
     return @out;
@@ -119,7 +106,6 @@ sub get_excludes
 {
     $client = $_[0];
     $type = "EXCLUDE";
-    debug(1, "Calling: $bpgetconfigbin -M $client $type");
     my @output = `$bpgetconfigbin -M $client $type`;
     return @output;
 }
@@ -147,15 +133,12 @@ sub make_tempfile
         UNLINK => 0);
     
     chomp($tmp);
-    debug(1, "Tmpfile: [$tmp]");
 
     foreach (@excludes)
     {
         chomp($_);
-        debug(2, "Printing $_ into [$tmp]");
         print $tmp "$_\n";
     }
-    debug(1, "Returning $tmp from make_tempfile()");
     return $tmp;
 }
 
@@ -203,7 +186,6 @@ sub main
         foreach (@filedata)
         {
             chomp($_);
-            debug(1, "Found row containing [".$_."] in $fileopt");
             push(@excludes, "EXCLUDE = $_");
         }
     }
@@ -213,7 +195,6 @@ sub main
     {
         foreach $client (@clients)
         {
-            debug(1, "processing $client");
             my @client_excludes = get_excludes($client);
             print "Excludes for client $client:\n";
             foreach (@client_excludes)
@@ -281,7 +262,6 @@ sub main
     # Cleanup tempfiles
     foreach my $f (@tmpfiles)
     {
-        debug(1, "Trying to delete [".$f."]");
         unlink $f or warn "Could not unlink $f: $!";
     }
 }

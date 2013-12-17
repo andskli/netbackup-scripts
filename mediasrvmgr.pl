@@ -41,7 +41,6 @@ my $getoptresult = GetOptions(\%opt,
     "mediasrv|m=s" => \$mediasrvopt,
     "file|f=s" => \$fileopt,
     "help|h|?" => \$help,
-    "debug|d" => \$debug,
 );
 output_usage() if (not $getoptresult);
 output_usage() if ($help);
@@ -58,22 +57,12 @@ Options:
     -m | --mediasrv <name>  : Name of media server to add/remove from clients
     -f | --file <path>      : Path to file with media servers which to add/remove
                             from clients
-    -d | --debug            : debug
     -h | --help             : display this output
 
 };
     die $usage;
 }
 
-sub debug
-{
-    my $level = $_[0];
-    my $msg = $_[1];
-    if ($opt{'d'})
-    {
-        print "<$level> DEBUG: $msg\n";
-    }
-}
 
 # Func stolen from stackoverflow to make array unique
 sub uniq
@@ -93,7 +82,6 @@ sub get_clients_in_policy
         {
             @p = split /\s+/, $_;
             push(@out, $p[1]);
-            debug(1, "found client $p[1] in $policyname");
         }
     }
     return @out;
@@ -103,7 +91,6 @@ sub pull_serverlist
 {
     $client = $_[0];
     $type = "SERVER";
-    debug(1, "Calling: $bpgetconfigbin -M $client $type");
     my @output = `$bpgetconfigbin -M $client $type`;
     return @output;
 }
@@ -142,15 +129,12 @@ sub make_tempfile
         UNLINK => 0);
     
     chomp($tmp);
-    debug(1, "Tmpfile: [$tmp]");
 
     foreach (@serverlist)
     {
         chomp($_);
-        debug(2, "Printing $_ into [$tmp]");
         print $tmp "$_\n";
     }
-    debug(1, "Returning $tmp from make_tempfile()");
     return $tmp;
 }
 
@@ -188,7 +172,6 @@ sub main
         foreach (@filedata)
         {
             chomp($_);
-            debug(1, "Found row containing [".$_."] in $fileopt");
             push(@serverlist, "SERVER = $_");
         }
     }
@@ -198,7 +181,6 @@ sub main
     {
         foreach $client (@clients)
         {
-            debug(1, "processing $client");
             my @client_serverlist = pull_serverlist($client);
             print "SERVERs for client $client:\n";
             foreach (@client_serverlist)
@@ -258,7 +240,6 @@ sub main
     # Cleanup tempfiles
     foreach my $f (@tmpfiles)
     {
-        debug(1, "Trying to delete [".$f."]");
         unlink $f or warn "Could not unlink $f: $!";
     }
 }

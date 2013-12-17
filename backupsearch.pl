@@ -41,7 +41,6 @@ my $getoptresult = GetOptions(\%opt,
     "policy|p=s" => \$policyname,
     "type|t=i" => \$policytype,
     "help|h" => \$help,
-    "debug|d" => \$debug,
     );
 output_usage() if (not $getoptresult);
 output_usage() if ($help);
@@ -88,22 +87,11 @@ Options:
                                     32  BE-MS-Exchange-Server
                                     34  Disk Staging
                                     35  NBU-Catalog
-    -d | --debug                : debug
     -h | --help                 : show this help
 
 };
 
     die $usage;
-}
-
-sub debug
-{
-    my $level = $_[0];
-    my $msg = $_[1];
-    if ($debug)
-    {
-        print "<$level> DEBUG: $msg\n";
-    }
 }
 
 # Find clients in selected policy, takes one argument
@@ -135,7 +123,6 @@ sub search
     # bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "/C/Temp"
     print "Searching $client ...\n";
     $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'"';
-    debug(1, "Executing: $cmd");
     system($cmd);
     return $?; # return status code of cmd
 }
