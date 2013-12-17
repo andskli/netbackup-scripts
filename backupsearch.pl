@@ -7,9 +7,6 @@
 # References:
 #   Backup type index: http://www.symantec.com/business/support/index?page=content&id=TECH27299
 #
-# Usage example:
-#   ./backupsearch.pl -t 13 -s 10/01/2013 -e 10/03/2013 -p Windows_policy_name -f "/C/Temp"
-# 
 # TODO:
 #   - Improve help with current policy type output
 #   - Search specific client
@@ -17,7 +14,7 @@
 
 #use strict;
 use warnings;
-use Getopt::Std;
+use Getopt::Long;
 use Data::Dumper;
 
 # Check OS and adjust netbackup executable binaries accordingly
@@ -35,62 +32,67 @@ elsif ($operating_system eq "linux")
     our $bppllistbin = $installpath."/bin/admincmd/bppllist";
 }
 
-my %opt;
-getopts('f:s:e:t:p:dh?', \%opt) or output_usage();
-output_usage() if $opt{'h'};
 
-if ((!$opt{'f'}) or
-    (!$opt{'s'}) or
-    (!$opt{'p'}) or
-    (!$opt{'e'}) or
-    (!$opt{'t'}))
-{
-    output_usage();
-}
+output_usage() if ($#ARGV <= 1);
+my %opt;
+my $getoptresult = GetOptions(\%opt,
+    "find|f=s" => \$searchstring,
+    "start|s=s" => \$startdate,
+    "end|e=s" => \$enddate,
+    "policy|p=s" => \$policyname,
+    "type|t=i" => \$policytype,
+    "help|h" => \$help,
+    "debug|d" => \$debug,
+    );
+output_usage() if (not $getoptresult);
+output_usage() if ($help);
 
 sub output_usage
 {
-    my $usage = "Usage: $0 [options]
+    my $usage = qq{
+Usage: $0 [options]
 
-    Options:
-        -f <string>         Search for string, note that you need to use /C/temp to search for C:/Temp
-        -s <mm/dd/yyyy>     Start date
-        -e <mm/dd/yyyy>     End date
-        -p <policy name>    Policy to search
-        -t <type>           Policy type (use 13 for windows!!)
-                                0   Standard    
-                                1   Proxy
-                                2   Non-Standard
-                                3   Apollo-wbak
-                                4   Oracle
-                                5   Any policy type 
-                                6   Informix-On-BAR 
-                                7   Sybase  
-                                8   MS-Sharepoint
-                                10  NetWare
-                                11  DataTools-SQL-BackTrack
-                                12  Auspex-FastBackup
-                                13  MS-Windows-NT
-                                14  OS/2
-                                15  MS-SQL-Server
-                                16  MS-Exchange-Server
-                                17  SAP
-                                18  DB2
-                                19  NDMP    
-                                20  FlashBackup
-                                21  Split-Mirror
-                                22  AFS
-                                24  DataStore
-                                25  Lotus-Notes
-                                28  MPE/iX
-                                29  FlashBackup-Windows
-                                30  Vault
-                                31  BE-MS-SQL-Server
-                                32  BE-MS-Exchange-Server
-                                34  Disk Staging
-                                35  NBU-Catalog
-        -d                  Debug.
-    \n";
+Options:
+    -f | --find <string>        : Search for string, note that you need to use /C/temp to search for C:/Temp
+    -s | --start <mm/dd/yyyy>   : Start date
+    -e | --end <mm/dd/yyyy>     : End date
+    -p | --policy <name>        : Policy to search
+    -t | --type N               : Policy type (use 13 for windows!!)
+                                    0   Standard    
+                                    1   Proxy
+                                    2   Non-Standard
+                                    3   Apollo-wbak
+                                    4   Oracle
+                                    5   Any policy type 
+                                    6   Informix-On-BAR 
+                                    7   Sybase  
+                                    8   MS-Sharepoint
+                                    10  NetWare
+                                    11  DataTools-SQL-BackTrack
+                                    12  Auspex-FastBackup
+                                    13  MS-Windows-NT
+                                    14  OS/2
+                                    15  MS-SQL-Server
+                                    16  MS-Exchange-Server
+                                    17  SAP
+                                    18  DB2
+                                    19  NDMP    
+                                    20  FlashBackup
+                                    21  Split-Mirror
+                                    22  AFS
+                                    24  DataStore
+                                    25  Lotus-Notes
+                                    28  MPE/iX
+                                    29  FlashBackup-Windows
+                                    30  Vault
+                                    31  BE-MS-SQL-Server
+                                    32  BE-MS-Exchange-Server
+                                    34  Disk Staging
+                                    35  NBU-Catalog
+    -d | --debug                : debug
+    -h | --help                 : show this help
+
+};
 
     die $usage;
 }
@@ -99,7 +101,7 @@ sub debug
 {
     my $level = $_[0];
     my $msg = $_[1];
-    if ($opt{'d'})
+    if ($debug)
     {
         print "<$level> DEBUG: $msg\n";
     }
@@ -108,8 +110,8 @@ sub debug
 # Find clients in selected policy, takes one argument
 sub clients_in_policy
 {
-    my $policyname = $_[0];
-    my $output = `$bppllistbin $policyname -l`;
+    my $name = $_[0];
+    my $output = `$bppllistbin $name -l`;
     my @out;
     foreach (split("\n", $output))
     {
@@ -134,7 +136,7 @@ sub search
     # bplist -C nyserver1 -t 13 -b -R -l -I -s 01/01/2008 -e 07/30/2013 -PI "/C/Temp"
     print "Searching $client ...\n";
     $cmd = $bplistbin.' -C '.$client.' -t '.$policytype.' -b -R -l -I -s '.$startdate.' -e '.$enddate.' -PI "'.$searchstr.'"';
-    
+    debug(1, "Executing: $cmd");
     system($cmd);
     return $?; # return status code of cmd
 }
@@ -142,10 +144,10 @@ sub search
 sub main
 {
     my @matched;
-    my @clients = clients_in_policy($opt{'p'});
+    my @clients = clients_in_policy($policyname);
     foreach $client (@clients)
     {
-        my $ret = search($client, $opt{'t'}, $opt{'s'}, $opt{'e'}, $opt{'f'});
+        my $ret = search($client, $policytype, $startdate, $enddate, $searchstring);
         if ($ret == 0)
         {
             push(@matched, $client); # push matched client into array
@@ -153,7 +155,7 @@ sub main
     }
     if (length(@matched))
     {
-        print "Matched string ".$opt{'f'}." on the following clients in policy ".$opt{'p'}.":\n";
+        print "Matched string $searchstring on the following clients in policy $policyname:\n";
         foreach (@matched)
         {
             print "\t\t".$_."\n";
