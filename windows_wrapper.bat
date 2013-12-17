@@ -6,9 +6,9 @@
 set perlbin="C:\Program Files\VERITAS\VRTSPerl\bin\perl.exe"
 
 if not exist %perlbin% (
-	echo %perlbin% does not exist, exiting
-	set err=1
-	exit /B %err%
+  echo %perlbin% does not exist, exiting
+  set err=1
+  exit /B %err%
 )
 
 :: Set which script to access
