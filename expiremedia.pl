@@ -18,7 +18,6 @@ my $getoptresult = GetOptions(\%opt,
     "file|f=s" => \$file,
     "force|X" => \$force,
     "help|h|?" => \$help,
-    "debug|d=i" => \$debug,
     );
 output_usage() if (not $getoptresult);
 output_usage() if ($help);
@@ -33,7 +32,6 @@ Options:
 
     -f | --file <path>      : File containing list of media ID's to be expired
     -X | --force            : Force expiration without questions asked
-    -d | --debug <level>    : Debug.
 
 };
 
@@ -54,15 +52,6 @@ elsif ($operating_system eq "linux")
     our $bpexpdatebin = $installpath."/bin/admincmd/bpexpdate";
 }
 
-sub debug
-{
-    my $level = $_[0];
-    my $msg = $_[1];
-    if ($debug)
-    {
-        print "<$level> DEBUG: $msg\n";
-    }
-}
 
 # Func stolen from stackoverflow to make array unique
 sub uniq
@@ -72,23 +61,16 @@ sub uniq
 
 sub main
 {
-    debug(1, "Reading from $file");
     my @media_names;
 
     open(FH, $file);
     while(<FH>)
     {
-        debug(1, "Read [$_] from $file");
         chomp $_;
-        debug(1, "Pushing [$_] into \@media_names");
         push(@media_names, $_);
     }
     close(FH);
         
-    foreach my $media (@media_names)
-    {
-        debug(1, "Adding $media to candidates for expiration");
-    }
     if ($#media_names >= 0)
     {
         foreach my $media (@media_names)
@@ -106,7 +88,6 @@ sub main
                 {
                     print "OK, you selected yes -- let's expire that media ($media)\n";
                     my $cmd = `$bpexpdatebin -m $media -d 0 -force`;
-                    debug(1, "Called $cmd");
                 }
                 elsif ($answer =~ m/no/i)
                 {
