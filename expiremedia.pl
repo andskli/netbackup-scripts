@@ -14,13 +14,13 @@ my @tmpfiles;
 
 my %opt;
 # Handle options
-my $result = GetOptions(\%opt,
+my $getoptresult = GetOptions(\%opt,
     "file|f=s" => \$file,
     "force|X" => \$force,
     "help|h|?" => \$help,
     "debug|d=i" => \$debug,
     );
-output_usage() if (not $result);
+output_usage() if (not $getoptresult);
 output_usage() if ($help);
 
 
