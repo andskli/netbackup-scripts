@@ -168,7 +168,7 @@ sub main
     {
         push(@clients, $clientopt);
     }
-    if ($opt{'p'}) # if -p is set, policy is specified and we need to fetch all clients
+    if ($policyname) # if -p is set, policy is specified and we need to fetch all clients
     {
         foreach (get_clients_in_policy($policyname))
         {
