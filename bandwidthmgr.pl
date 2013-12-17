@@ -39,22 +39,33 @@ elsif ($operating_system eq "linux")
 my @tmpfiles;
 
 my %opt;
-getopts('a:p:c:f:e:dh?', \%opt) or output_usage();
-output_usage() if $opt{'h'};
+my $getoptresult = GetOptions(\%opt,
+	"action|a=s" => \$actionopt,
+	"limit|l=i" => \$limitopt,
+	"client|c=s" => \$clientopt,
+	"policy|p=s" => \$policyopt,
+	"network|n=s" => \$networkopt,
+	"help|h" => \$help,
+	"debug|d" => \$debug,
+);
+output_usage() if (not $getoptresult);
+output_usage() if ($help);
 
 sub output_usage
 {
-	my $usage = "Usage: $0 [options]
+	my $usage = qq{
+Usage: $0 [options]
 
-Mandatory:
-	-a <get/set>	Action to perform
-	-l <limit>		The limit in MBit/s
-One of the following:
-	-c <client>		Client which will be affected
-	-p <policy>		Policy to work on
-	-n <network>	Specify
+Options:
+	-a | --action <action>		: Which action to perform (get/set)
+	-l | --limit <speed>		: Speed in KiB/Sec (symantec standard)
+	-c | --client <name>		: Set for which client?
+	-p | --policy <name>		: Set for which policy?
+	-n | --network <network>	: Set for which network (should accept cidr mask)
+	-d | --debug				: debug
+	-h | --help					: display this help output
 
-	-d 		Debug.\n";
+};
 
 	die $usage;
 }
