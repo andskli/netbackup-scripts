@@ -33,7 +33,6 @@ elsif ($operating_system eq "linux")
 }
 
 
-output_usage() if ($#ARGV <= 1);
 my %opt;
 my $getoptresult = GetOptions(\%opt,
     "find|f=s" => \$searchstring,
