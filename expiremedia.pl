@@ -7,8 +7,39 @@
 
 #use strict;
 use warnings;
-use Getopt::Std;
+use Getopt::Long;
 use Data::Dumper;
+
+my @tmpfiles;
+
+my %opt;
+# Handle options
+my $result = GetOptions(\%opt,
+    "file|f=s" => \$file,
+    "force|X" => \$force,
+    "help|h|?" => \$help,
+    "debug|d=i" => \$debug,
+    );
+output_usage() if (not $result);
+output_usage() if ($help);
+
+
+sub output_usage
+{
+    my $usage = qq{
+Usage: $0 [options]
+
+Options:
+
+    -f | --file <path>      : File containing list of media ID's to be expired
+    -X | --force            : Force expiration without questions asked
+    -d | --debug <level>    : Debug.
+
+};
+
+    die $usage;
+}
+
 
 # Check OS and adjust netbackup executable binaries accordingly
 my $operating_system = $^O;
@@ -23,30 +54,11 @@ elsif ($operating_system eq "linux")
     our $bpexpdatebin = $installpath."/bin/admincmd/bpexpdate";
 }
 
-my @tmpfiles;
-
-my %opt;
-getopts('X:f:dh?', \%opt) or output_usage();
-
-if (!$opt{'f'}) { output_usage(); }
-
-sub output_usage
-{
-    my $usage = "Usage: $0 [options]
-
-Options:
-\t-f <path>\t\tfile containing list of media ID's to be expired
-\t-X\t\t\tforce expiration without questions asked
-\t-d\t\t\tDebug.\n";
-
-    die $usage;
-}
-
 sub debug
 {
     my $level = $_[0];
     my $msg = $_[1];
-    if ($opt{'d'})
+    if ($debug)
     {
         print "<$level> DEBUG: $msg\n";
     }
@@ -60,7 +72,6 @@ sub uniq
 
 sub main
 {
-    my $file = $opt{'f'};
     debug(1, "Reading from $file");
     my @media_names;
 
@@ -82,7 +93,7 @@ sub main
     {
         foreach my $media (@media_names)
         {
-            if ($opt{'X'})
+            if ($force)
             {
                 my $cmd = `$bpexpdatebin -m $media -d 0 -force`;
             }
