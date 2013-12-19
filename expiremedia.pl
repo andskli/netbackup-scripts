@@ -43,8 +43,12 @@ Options:
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
 {
-    my $installpath = "\"C:\\Program Files\\Veritas\\NetBackup";
-    our $bpexpdatebin = $installpath."\\bin\\admincmd\\bpexpdate\"";
+    if (exists $ENV{'NBU_INSTALLDIR'})
+    {
+        $installpath = "$ENV{'NBU_INSTALLDIR'}";
+        chomp($installpath);
+    }
+    our $bpexpdatebin = "\"$installpath\\NetBackup\\bin\\admincmd\\bpexpdate\"";
 }
 elsif ($operating_system eq "linux")
 {
