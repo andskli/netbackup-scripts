@@ -16,23 +16,22 @@ if defined NBU_INSTALLDIR (
 ) else (
   set err=1
   @echo "%NBU_KEY_NAME%"\"%NBU_VALUE_NAME%" not found.
-  exit /B %err%
 )
 
 :: params for how to find VRTSPerl installation dir
 set VRTSPERL_KEY_NAME=HKEY_LOCAL_MACHINE\SOFTWARE\VERITAS\VRTSPerl
 set VRTSPERL_VALUE_NAME=InstallDir
 :: find VRTSPerl installdir
-for /F "skip=2 tokens=1,2*" %%A in ('REG QUERY %NBU_KEY_NAME% /v %NBU_VALUE_NAME% 2^>nul') do (
+for /F "skip=2 tokens=1,2*" %%A in ('REG QUERY %VRTSPERL_KEY_NAME% /v %VRTSPERL_VALUE_NAME% 2^>nul') do (
   set VRTSPERL_INSTALLDIR=%%C
 )
 
 if defined VRTSPERL_INSTALLDIR (
-  set PERLBIN="%VRTSPERL_INSTALLDIR%\VRTSPerl\bin\perl.exe"
+  set PERLBIN="%VRTSPERL_INSTALLDIR%\bin\perl.exe"
+  REM echo %PERLBIN%
   ) else (
   set err=1
   @echo "%VRTSPERL_KEY_NAME%"\"%NBU_VALUE_NAME%" not found.
-  exit /B %err%
   )
 
 :: Set which script to access
@@ -47,10 +46,12 @@ if exist "%1" (
 
   REM Grab exit status of command
   set err=%errorlevel%
-  exit /B %err%
 ) else (
   echo File not found.
   echo %1
   set err=1
-  exit /B %err%
+
 )
+
+reg delete HKEY_CURRENT_USER\Environment /v NBU_INSTALLDIR /f >NUL
+exit /B %err%
