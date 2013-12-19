@@ -21,9 +21,13 @@ use Data::Dumper;
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
 {
-    my $installpath = "\"C:\\Program Files\\Veritas\\NetBackup";
-    our $bplistbin = $installpath."\\bin\\bplist\"";
-    our $bppllistbin = $installpath."\\bin\\admincmd\\bppllist\"";
+    if (exists $ENV{'NBU_INSTALLDIR'})
+    {
+        $installpath = "$ENV{'NBU_INSTALLDIR'}";
+        chomp($installpath);
+    }
+    our $bplistbin = "\"$installpath\\NetBackup\\bin\\bplist\"";
+    our $bppllistbin = "\"$installpath\\NetBackup\\bin\\admincmd\\bppllist\"";
 }
 elsif ($operating_system eq "linux")
 {

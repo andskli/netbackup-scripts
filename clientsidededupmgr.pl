@@ -18,9 +18,13 @@ my $windows_temppath = dirname(__FILE__);
 my $operating_system = $^O;
 if ($operating_system eq "MSWin32")
 {
-    my $installpath = "\"C:\\Program Files\\Veritas\\NetBackup";
-    our $bppllistbin = $installpath."\\bin\\admincmd\\bppllist\"";
-    our $bpclientbin = $installpath."\\bin\\admincmd\\bpclient\"";
+    if (exists $ENV{'NBU_INSTALLDIR'})
+    {
+        $installpath = "$ENV{'NBU_INSTALLDIR'}";
+        chomp($installpath);
+    }
+    our $bppllistbin = "\"$installpath\\NetBackup\\bin\\admincmd\\bppllist\"";
+    our $bpclientbin = "\"$installpath\\NetBackup\\bin\\admincmd\\bpclient\"";
 }
 else
 {
