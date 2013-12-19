@@ -3,13 +3,10 @@
 
 :: params for where to find NBU installdir on windows
 setlocal ENABLEEXTENSIONS
-set KEY_NAME=HKEY_LOCAL_MACHINE\SOFTWARE\VERITAS\NetBackup\CurrentVersion
-set VALUE_NAME=INSTALLDIR
-:: Set perl binary to use
-set PERLBIN="C:\Program Files\VERITAS\VRTSPerl\bin\perl.exe"
-
-
-for /F "skip=2 tokens=1,2*" %%A in ('REG QUERY %KEY_NAME% /v %VALUE_NAME% 2^>nul') do (
+set NBU_KEY_NAME=HKEY_LOCAL_MACHINE\SOFTWARE\VERITAS\NetBackup\CurrentVersion
+set NBU_VALUE_NAME=INSTALLDIR
+:: find installdir for netbackup
+for /F "skip=2 tokens=1,2*" %%A in ('REG QUERY %NBU_KEY_NAME% /v %NBU_VALUE_NAME% 2^>nul') do (
     set NBU_INSTALLDIR=%%C
 )
 
@@ -18,16 +15,25 @@ if defined NBU_INSTALLDIR (
   setx NBU_INSTALLDIR "%NBU_INSTALLDIR%" >NUL
 ) else (
   set err=1
-  @echo "%KEY_NAME%"\"%VALUE_NAME%" not found.
+  @echo "%NBU_KEY_NAME%"\"%NBU_VALUE_NAME%" not found.
   exit /B %err%
 )
 
+:: params for how to find VRTSPerl installation dir
+set VRTSPERL_KEY_NAME=HKEY_LOCAL_MACHINE\SOFTWARE\VERITAS\VRTSPerl
+set VRTSPERL_VALUE_NAME=InstallDir
+:: find VRTSPerl installdir
+for /F "skip=2 tokens=1,2*" %%A in ('REG QUERY %NBU_KEY_NAME% /v %NBU_VALUE_NAME% 2^>nul') do (
+  set VRTSPERL_INSTALLDIR=%%C
+)
 
-if not exist %PERLBIN% (
-  echo %PERLBIN% does not exist, exiting
+if defined VRTSPERL_INSTALLDIR (
+  set PERLBIN="%VRTSPERL_INSTALLDIR%\VRTSPerl\bin\perl.exe"
+  ) else (
   set err=1
+  @echo "%VRTSPERL_KEY_NAME%"\"%NBU_VALUE_NAME%" not found.
   exit /B %err%
-)
+  )
 
 :: Set which script to access
 set command=%*
