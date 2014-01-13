@@ -42,7 +42,7 @@ my $getoptresult = GetOptions(\%opt,
     "action|a=s" => \$actionopt,
     "client|c=s" => \$clientopt,
     "policy|p=s" => \$policyopt,
-    "mediasrv|m=s" => \$mediasrvopt,
+    "mediasrv|m=s" => \@mediasrvopt,
     "file|f=s" => \$fileopt,
     "help|h|?" => \$help,
 );
@@ -160,9 +160,11 @@ sub main
 
     # Figure out media server(s)
     my @serverlist;
-    if ($mediasrvopt) # if -m
+    if (@mediasrvopt) # if -m
     {
-        push(@serverlist, "SERVER = $mediasrvopt");
+    	foreach my $m (@mediasrvopt) {
+    		push(@serverlist, "SERVER = $m");
+    	}
     }
     if ($fileopt) # use file
     {
