@@ -58,7 +58,9 @@ Options:
     -a | --action <action>  : Action to perform, may be any of add/get/del
     -c | --client <name>    : Client that will be affected
     -p | --policy <name>    : Policy with clients that will be affected
-    -m | --mediasrv <name>  : Name of media server to add/remove from clients
+    -m | --mediasrv <name>  : Name of media server(s) to add/remove from client,
+    						specify multiple times to specify more media servers.
+    						(i.e. -m srv1 -m srv2).
     -f | --file <path>      : Path to file with media servers which to add/remove
                             from clients
     -h | --help             : display this output
