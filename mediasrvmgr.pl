@@ -206,6 +206,7 @@ sub main
             print "SERVERs for client $client:\n";
             foreach (@client_serverlist)
             {
+                s/^SERVER \= (.*)$/$1/;
                 print "\t$_";
             }
         }
