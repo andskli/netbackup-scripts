@@ -157,6 +157,18 @@ sub push_excludes
 }
 
 
+sub close_and_delete
+{
+    my $f = $_[0];
+    close($f);
+    if ($operating_system eq "MSWin32") {
+        system("del /F $f");
+    } else {
+        unlink $f or warn "Could not unlink $f: $!\n";
+    }
+}
+
+
 sub main
 {
     # Figure out what clients to operate on
@@ -267,7 +279,7 @@ sub main
     # Cleanup tempfiles
     foreach my $f (@tmpfiles)
     {
-        close($f);
+        close_and_delete($f);
     }
 }
 
