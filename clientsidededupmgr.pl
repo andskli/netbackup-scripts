@@ -173,7 +173,7 @@ sub main
         if ($setting eq "LIST")
         {
             my $m = get_mode($client);
-            print("\t$client mode: $m\n");
+            print("client:$client mode:$m\n");
         }
         else
         {
