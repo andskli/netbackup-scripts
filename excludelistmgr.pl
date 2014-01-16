@@ -216,6 +216,7 @@ sub main
             print "Excludes for client $client:\n";
             foreach (@client_excludes)
             {
+                s/^EXCLUDE \= (.*)$/$1/;
                 print "\t$_";
             }
         }
