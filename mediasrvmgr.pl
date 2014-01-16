@@ -144,6 +144,7 @@ sub make_tempfile
     return $tmp;
 }
 
+
 sub main
 {
     # Figure out what clients to operate on
@@ -248,7 +249,7 @@ sub main
     # Cleanup tempfiles
     foreach my $f (@tmpfiles)
     {
-        unlink $f or warn "Could not unlink $f: $!";
+        close($f);
     }
 }
 

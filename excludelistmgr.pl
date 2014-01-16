@@ -156,6 +156,7 @@ sub push_excludes
     print `$cmd`;
 }
 
+
 sub main
 {
     # Figure out what clients to operate on
@@ -266,7 +267,7 @@ sub main
     # Cleanup tempfiles
     foreach my $f (@tmpfiles)
     {
-        unlink $f or warn "Could not unlink $f: $!";
+        close($f);
     }
 }
 
