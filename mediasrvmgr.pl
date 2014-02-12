@@ -40,7 +40,7 @@ my @tmpfiles;
 my %opt;
 my $getoptresult = GetOptions(\%opt,
     "action|a=s" => \$actionopt,
-    "client|c=s" => \$clientopt,
+    "client|c=s" => \@clientopt,
     "policy|p=s" => \$policyopt,
     "mediasrv|m=s" => \@mediasrvopt,
     "file|f=s" => \$fileopt,
@@ -161,9 +161,11 @@ sub main
 {
     # Figure out what clients to operate on
     my @clients;
-    if ($clientopt) # if -c is set, one client
+    if (@clientopt) # if -c is set, one client
     {
-        push(@clients, $clientopt);
+        foreach my $c (@clientopt) {
+            push(@clients, $c);
+        }
     }
     if ($policyopt) # if -p, we specify a policy
     {
