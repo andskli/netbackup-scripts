@@ -32,7 +32,7 @@ if ($operating_system eq "MSWin32")
 elsif ($operating_system eq "linux")
 {
     my $installpath = "/usr/openv/netbackup";
-    our $bplistbin = $installpath."/bin/admincmd/bplist";
+    our $bplistbin = $installpath."/bin/bplist";
     our $bppllistbin = $installpath."/bin/admincmd/bppllist";
 }
 
