@@ -81,6 +81,7 @@ sub main
         {
             if ($force)
             {
+                print "Expiring media $media ..\n";
                 my $cmd = `$bpexpdatebin -m $media -d 0 -force`;
             }
             else
