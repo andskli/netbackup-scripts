@@ -2,7 +2,7 @@
 #
 # NetBackup script to expire tape(s).
 #
-# Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
+# Author: Andreas Skarmutsos Lindh <andreas@superblock.se>
 #
 
 #use strict;

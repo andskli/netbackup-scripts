@@ -2,7 +2,7 @@
 # Search NetBackup backups for specific file om a policy.
 # Handy if looking for old backup files where clients have changed
 #
-# Author: Andreas Skarmutsos Lindh <andreas.skarmutsoslindh@gmail.com>
+# Author: Andreas Skarmutsos Lindh <andreas@superblock.se>
 #
 # References:
 #   Backup type index: http://www.symantec.com/business/support/index?page=content&id=TECH27299
