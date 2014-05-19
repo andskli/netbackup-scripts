@@ -11,6 +11,8 @@ use Data::Dumper;
 use File::Temp;
 use File::Basename;
 
+my $lookback_hours = 24;
+
 my $windows_temppath = dirname(__FILE__);
 
 # Check OS and adjust paths accordingly
@@ -78,7 +80,7 @@ sub find_jobids_by_policy
 {
     my $policy = $_[0];
     my @jobs;
-    my $output = `$bperrorbin -backstat -l -hoursago 24`;
+    my $output = `$bperrorbin -backstat -l -hoursago $lookback_hours`;
     foreach my $line (split("\n", $output))
     {
         if ($line =~ m/POLICY $policy/)
@@ -90,7 +92,7 @@ sub find_jobids_by_policy
 
             # Ignore parent snapshot jobs
             unless ($jobid == $parentjobid) {
-                push(@jobs, ($jobid, $client));
+                push(@jobs, [$jobid, $client]);
             }
         }
     }
@@ -101,9 +103,9 @@ sub get_transporttype
 {
     my $jobid = $_[0];
     my $output = `$bpdbjobsbin -report -all_columns -jobid $jobid`;
-    my @match = $output =~ m/Transport Type =  (.*?)\,/;
+    my @match = $output =~ m/Transport Type = [\ ]?(.*?)\,/;
     my $transporttype = $match[0];
-    
+    #print "FOUND TRANSPORTTYPE: $transporttype\n"; 
     return $transporttype;
 }
 
@@ -113,18 +115,22 @@ sub main
     {
         my @transportmodes = get_policy_transport_types($policy);
         my @jobs = find_jobids_by_policy($policy);
-        my $primary_transportmode = pop(@transportmodes);
+        if (!length(@jobs)) {
+             die "No jobs found within the last $lookback_hours, exiting!\n";
+        }
+        my $primary_transportmode = shift(@transportmodes);
+        my $secondary_transportmodes = join(" ", @transportmodes);
 
         my @nodes_primary;
         my @nodes_secondary;
 
-        foreach my $job (\@jobs)
+        foreach my $job (@jobs)
         {
-             print Dumper($job);
              my $jobid = $job->[0];
              my $client = $job->[1];
-             print("JOBID: $jobid  CLIENT: $client\n");
-             if ($primary_transportmode eq get_transporttype($jobid))
+             #print("JOBID: $jobid  CLIENT: $client\n");
+             my $transporttype = get_transporttype($jobid);
+             if ($primary_transportmode eq $transporttype)
              {
                  push(@nodes_primary, $client);
              }
@@ -135,10 +141,18 @@ sub main
         }
 
         print("PRIMARY TRANSPORTMODE: $primary_transportmode\n");
-        print("NODES USING PRIMARY TRANSPORT MODE ($primary_transportmode):\n");
-        print Dumper(@nodes_primary);
-        print("NODES USING SECONDARY TRANSPORT MODES:\n");
-        print Dumper(@nodes_secondary);
+        if (length(@nodes_primary) > 0)
+        {
+             print("NODES USING PRIMARY TRANSPORT MODE ($primary_transportmode): ");
+             my $nodes = sprintf '%s ' x @nodes_primary, @nodes_primary;
+             print $nodes."\n";
+        }
+        if (length(@nodes_secondary) > 0)
+        {
+             print("NODES USING SECONDARY TRANSPORT MODES ($secondary_transportmodes): ");
+             my $nodes = sprintf '%s ' x @nodes_secondary, @nodes_secondary;
+             print $nodes."\n";
+        }
     }
 }
 
