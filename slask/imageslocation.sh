@@ -28,7 +28,7 @@ fi
 BPIMAGELISTBIN=/usr/openv/netbackup/bin/admincmd/bpimagelist
 
 for image in `cat $FILE`; do
-    #  bpimagelist -l -backupid tris011.hm.com_1392325224|awk '{print $9}'|egrep '^[A-z]{2,3}[0-9]{3,4}.*'
+    #  bpimagelist -l -backupid BACKUPID_1392325224|awk '{print $9}'|egrep '^[A-z]{2,3}[0-9]{3,4}.*'
     MEDIA=""
     #ON_MEDIA=`$BPIMAGELISTBIN -l -backupid $image | awk '{print $9}' | egrep '^[A-z]{2,3}[0-9]{3,4}$' | sort -u`
     ON_MEDIA=`$BPIMAGELISTBIN -l -backupid $image | grep ^FRAG | awk '{print $9}' | sort -u`
